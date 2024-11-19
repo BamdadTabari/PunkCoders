@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35507.96 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PunkCoders", "PunkCoders.csproj", "{DEC8B180-6D04-4280-A217-F87F5399BB88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataProvider", "..\DataProvider\DataProvider.csproj", "{7F21B378-386A-41A7-A6D4-B5116B232591}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DEC8B180-6D04-4280-A217-F87F5399BB88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEC8B180-6D04-4280-A217-F87F5399BB88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEC8B180-6D04-4280-A217-F87F5399BB88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEC8B180-6D04-4280-A217-F87F5399BB88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F21B378-386A-41A7-A6D4-B5116B232591}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F21B378-386A-41A7-A6D4-B5116B232591}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F21B378-386A-41A7-A6D4-B5116B232591}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F21B378-386A-41A7-A6D4-B5116B232591}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2BBA86F9-B79A-4925-B0CB-8D97E77453B5}
+	EndGlobalSection
+EndGlobal
