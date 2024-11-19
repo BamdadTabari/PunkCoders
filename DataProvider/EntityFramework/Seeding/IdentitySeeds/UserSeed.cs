@@ -1,9 +1,9 @@
-﻿using Base.Assistant.Helpers;
-using Base.Certain.Constants;
-using Base.Certain.Enums;
-using Base.EntityFramework.Entities.Identity;
+﻿using DataProvider.Assistant.Helpers;
+using DataProvider.Certain.Constants;
+using DataProvider.Certain.Enums;
+using DataProvider.EntityFramework.Entities.Identity;
 
-namespace Base.EntityFramework.Seeding.IdentitySeeds;
+namespace DataProvider.EntityFramework.Seeding.IdentitySeeds;
 
 public static class UserSeed
 {

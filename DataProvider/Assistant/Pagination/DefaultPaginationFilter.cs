@@ -1,4 +1,4 @@
-﻿namespace Base.Assistant.Pagination
+﻿namespace DataProvider.Assistant.Pagination
 {
     public class DefaultPaginationFilter : PaginationFilter
     {

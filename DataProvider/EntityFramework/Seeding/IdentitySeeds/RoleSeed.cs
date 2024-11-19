@@ -1,6 +1,6 @@
-﻿using Base.EntityFramework.Entities.Identity;
+﻿using DataProvider.EntityFramework.Entities.Identity;
 
-namespace Base.EntityFramework.Seeding.IdentitySeeds;
+namespace DataProvider.EntityFramework.Seeding.IdentitySeeds;
 
 public static class RoleSeed
 {

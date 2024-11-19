@@ -1,8 +1,8 @@
-﻿using Base.EntityFramework.Entities.Identity;
+﻿using DataProvider.EntityFramework.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Base.EntityFramework.Entities.Blog;
+namespace DataProvider.EntityFramework.Entities.Blog;
 public class Post : BaseEntity
 {
     public string Title { get; set; }

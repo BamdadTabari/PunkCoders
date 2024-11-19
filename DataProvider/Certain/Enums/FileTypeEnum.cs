@@ -1,4 +1,4 @@
-﻿namespace Base.Certain.Enums;
+﻿namespace DataProvider.Certain.Enums;
 
 public enum FileTypeEnum
 {

@@ -1,4 +1,4 @@
-﻿namespace Base.Certain.Constants;
+﻿namespace DataProvider.Certain.Constants;
 
 public static class Defaults
 {

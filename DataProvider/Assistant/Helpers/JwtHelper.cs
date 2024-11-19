@@ -1,11 +1,11 @@
-﻿using Base.Certain.Configs;
-using Base.EntityFramework.Entities.Identity;
+﻿using DataProvider.Certain.Configs;
+using DataProvider.EntityFramework.Entities.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using Claim = System.Security.Claims.Claim;
 
-namespace Base.Assistant.Helpers;
+namespace DataProvider.Assistant.Helpers;
 
 public static class JwtHelper
 {

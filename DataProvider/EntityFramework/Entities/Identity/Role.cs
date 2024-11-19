@@ -1,8 +1,8 @@
-﻿using Base.Certain.Constants;
+﻿using DataProvider.Certain.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Base.EntityFramework.Entities.Identity;
+namespace DataProvider.EntityFramework.Entities.Identity;
 
 public class Role : BaseEntity
 {

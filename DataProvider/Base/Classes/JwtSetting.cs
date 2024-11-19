@@ -1,4 +1,4 @@
-﻿namespace Base.Base.Classes
+﻿namespace DataProvider.Base.Classes
 {
     public class JwtSetting
     {

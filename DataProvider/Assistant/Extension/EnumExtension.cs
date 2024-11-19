@@ -1,4 +1,4 @@
-﻿namespace Base.Assistant.Extension;
+﻿namespace DataProvider.Assistant.Extension;
 
 public static class EnumExtension
 {

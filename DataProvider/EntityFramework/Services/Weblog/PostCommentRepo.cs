@@ -1,8 +1,8 @@
-﻿using Base.EntityFramework.Configs;
-using Base.EntityFramework.Entities.Blog;
-using Base.EntityFramework.Repository;
+﻿using DataProvider.EntityFramework.Configs;
+using DataProvider.EntityFramework.Entities.Blog;
+using DataProvider.EntityFramework.Repository;
 
-namespace Base.EntityFramework.Services.Weblog;
+namespace DataProvider.EntityFramework.Services.Weblog;
 public interface IPostCommentRepo : IRepository<PostComment>
 {
 }

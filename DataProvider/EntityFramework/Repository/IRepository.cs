@@ -1,9 +1,9 @@
-﻿using Base.EntityFramework.Configs;
-using Base.EntityFramework.Entities;
+﻿using DataProvider.EntityFramework.Configs;
+using DataProvider.EntityFramework.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace Base.EntityFramework.Repository;
+namespace DataProvider.EntityFramework.Repository;
 public interface IRepository<TEntity> where TEntity : class, IBaseEntity
 {
     Task<bool> ExistsAsync(long id);

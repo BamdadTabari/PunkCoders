@@ -1,12 +1,12 @@
-﻿using Base.Assistant.Extension;
-using Base.Certain.Constants;
-using Base.Certain.Enums;
-using Base.EntityFramework.Entities.Blog;
+﻿using DataProvider.Assistant.Extension;
+using DataProvider.Certain.Constants;
+using DataProvider.Certain.Enums;
+using DataProvider.EntityFramework.Entities.Blog;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Base.EntityFramework.Entities.Identity;
+namespace DataProvider.EntityFramework.Entities.Identity;
 
 public class User : BaseEntity
 {

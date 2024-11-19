@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
-namespace Base.EntityFramework.Configs;
+namespace DataProvider.EntityFramework.Configs;
 
 public static class DataDefineExtentions
 {

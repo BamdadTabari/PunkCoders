@@ -1,8 +1,8 @@
-﻿using Base.EntityFramework.Configs;
-using Base.EntityFramework.Entities.Identity;
-using Base.EntityFramework.Repository;
+﻿using DataProvider.EntityFramework.Configs;
+using DataProvider.EntityFramework.Entities.Identity;
+using DataProvider.EntityFramework.Repository;
 
-namespace Base.EntityFramework.Services.Identity;
+namespace DataProvider.EntityFramework.Services.Identity;
 internal class UserRoleRepo
 {
 }

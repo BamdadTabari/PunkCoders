@@ -1,10 +1,10 @@
-﻿using Base.Assistant.Pagination;
-using Base.EntityFramework.Configs;
-using Base.EntityFramework.Entities.Blog;
-using Base.EntityFramework.Repository;
+﻿using DataProvider.Assistant.Pagination;
+using DataProvider.EntityFramework.Configs;
+using DataProvider.EntityFramework.Entities.Blog;
+using DataProvider.EntityFramework.Repository;
 using Microsoft.EntityFrameworkCore;
 
-namespace Base.EntityFramework.Services.Weblog;
+namespace DataProvider.EntityFramework.Services.Weblog;
 public interface IPostCategoryRepo : IRepository<PostCategory>
 {
     Task<bool> AnyAsync(string name);
@@ -23,7 +23,7 @@ public class PostCategoryRepo : Repository<PostCategory>, IPostCategoryRepo
 
     public Task<bool> AnyAsync(string name)
     {
-        return _queryable.AnyAsync(x => x.Name.Replace(" ", "").Equals(name.Replace(" ", ""), StringComparison.CurrentCultureIgnoreCase));
+        return _queryable.AnyAsync(x => x.Name.Replace(" ", "").ToLower() == name.Replace(" ", "").ToLower());
     }
 
     public async Task<PostCategory?> GetByPostCategoryIdAsync(int id)

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Base.Models.Command.Blog;
+namespace DataProvider.Models.Command.Blog;
 
 public class CreatePostCategoryCommand
 {

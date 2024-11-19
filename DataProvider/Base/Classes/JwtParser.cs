@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Text.Json;
 
-namespace Base.Base.Classes
+namespace DataProvider.Base.Classes
 {
     public static class JwtParser
     {

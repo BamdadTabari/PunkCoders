@@ -1,4 +1,4 @@
-﻿namespace Base.Base.Error;
+﻿namespace DataProvider.Base.Error;
 public class ErrorResponse
 {
     public ErrorResponse(ErrorModel error)

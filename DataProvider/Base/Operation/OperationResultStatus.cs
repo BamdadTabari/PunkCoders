@@ -1,4 +1,4 @@
-﻿namespace Base.Base.Operation;
+﻿namespace DataProvider.Base.Operation;
 public enum OperationResultStatus
 {
     Ok = 1,

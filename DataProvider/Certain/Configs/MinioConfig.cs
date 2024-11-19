@@ -1,4 +1,4 @@
-﻿namespace Base.Certain.Configs;
+﻿namespace DataProvider.Certain.Configs;
 
 // for saving file operation
 public class MinioConfig

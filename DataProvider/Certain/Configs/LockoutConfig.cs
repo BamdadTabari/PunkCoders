@@ -1,4 +1,4 @@
-﻿namespace Base.Certain.Configs;
+﻿namespace DataProvider.Certain.Configs;
 
 public class LockoutConfig
 {

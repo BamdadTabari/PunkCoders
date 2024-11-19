@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Base.EntityFramework.Entities.Blog;
+namespace DataProvider.EntityFramework.Entities.Blog;
 public class PostCategory : BaseEntity
 {
     public string Name { get; set; }

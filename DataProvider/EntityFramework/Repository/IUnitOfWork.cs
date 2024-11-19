@@ -1,7 +1,7 @@
-﻿using Base.EntityFramework.Configs;
-using Base.EntityFramework.Services.Weblog;
+﻿using DataProvider.EntityFramework.Configs;
+using DataProvider.EntityFramework.Services.Weblog;
 
-namespace Base.EntityFramework.Repository;
+namespace DataProvider.EntityFramework.Repository;
 public interface IUnitOfWork : IDisposable
 {
     IPostCategoryRepo PostCategoryRepo { get; }

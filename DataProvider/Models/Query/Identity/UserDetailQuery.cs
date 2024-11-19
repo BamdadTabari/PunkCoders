@@ -1,7 +1,7 @@
-﻿using Base.Assistant.Models;
+﻿using DataProvider.Assistant.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace Base.Models.Query.Identity;
+namespace DataProvider.Models.Query.Identity;
 public class UserDetailQuery(RequestInfo requestInfo) : IRequestInfo
 {
     [Required(ErrorMessage = "لطفا مقدار نام کاربری را پر کنید")]

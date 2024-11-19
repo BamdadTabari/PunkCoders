@@ -1,4 +1,4 @@
-﻿namespace Base.Assistant.Helpers;
+﻿namespace DataProvider.Assistant.Helpers;
 
 public static class AllowedCharacters
 {

@@ -1,4 +1,4 @@
-﻿namespace Base.Models.Result.Identity
+﻿namespace DataProvider.Models.Result.Identity
 {
     public class LoginResultDto
     {

@@ -1,4 +1,4 @@
-﻿namespace Base.Base.Error;
+﻿namespace DataProvider.Base.Error;
 public struct ErrorModel
 {
     public ErrorModel(int code, string title, List<string> messages)

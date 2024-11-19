@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Base.EntityFramework.Entities.Identity;
+namespace DataProvider.EntityFramework.Entities.Identity;
 
 public class UserRole : BaseEntity
 {

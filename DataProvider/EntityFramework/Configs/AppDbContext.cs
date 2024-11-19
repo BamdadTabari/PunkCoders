@@ -1,10 +1,9 @@
-﻿using Base.EntityFramework.Entities.Identity;
-using Base.EntityFramework.Seeding.IdentitySeeds;
+﻿using DataProvider.EntityFramework.Entities.Identity;
+using DataProvider.EntityFramework.Seeding.IdentitySeeds;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Reflection;
 
-namespace Base.EntityFramework.Configs;
+namespace DataProvider.EntityFramework.Configs;
 public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
@@ -21,7 +20,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<UserRole>().HasData(UserRoleSeed.All);
         modelBuilder.Entity<Role>().HasData(RoleSeed.All);
         modelBuilder.Entity<User>().HasData(UserSeed.All);
-        
+
         // Creating Model
         base.OnModelCreating(modelBuilder);
     }

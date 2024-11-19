@@ -1,4 +1,4 @@
-﻿namespace Base.EntityFramework.Entities;
+﻿namespace DataProvider.EntityFramework.Entities;
 public interface IBaseEntity { }
 
 public class BaseEntity : IBaseEntity

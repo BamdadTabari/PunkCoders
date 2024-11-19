@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace Base.Assistant.Helpers;
+namespace DataProvider.Assistant.Helpers;
 
 public sealed class PasswordHasher
 {

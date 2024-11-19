@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Base.Models.Command.Identity
+namespace DataProvider.Models.Command.Identity
 {
     public class LoginCommand
     {

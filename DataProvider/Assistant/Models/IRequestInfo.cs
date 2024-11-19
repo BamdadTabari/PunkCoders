@@ -1,4 +1,4 @@
-﻿namespace Base.Assistant.Models;
+﻿namespace DataProvider.Assistant.Models;
 
 public interface IRequestInfo
 {
