@@ -9,7 +9,8 @@ public interface IPostCategoryRepo : IRepository<PostCategory>
 {
     Task<bool> AnyAsync(string name);
     Task<PostCategory?> GetByPostCategoryIdAsync(int id);
-    PaginatedList<PostCategory> GetPaginatedPostCategory(string phone, DefaultPaginationFilter filter);
+    PaginatedList<PostCategory> GetPaginatedPostCategory(DefaultPaginationFilter filter);
+    Task<List<PostCategory>> GetAll();
 }
 
 public class PostCategoryRepo : Repository<PostCategory>, IPostCategoryRepo
@@ -26,19 +27,26 @@ public class PostCategoryRepo : Repository<PostCategory>, IPostCategoryRepo
         return _queryable.AnyAsync(x => x.Name.Replace(" ", "").ToLower() == name.Replace(" ", "").ToLower());
     }
 
-    public async Task<PostCategory?> GetByPostCategoryIdAsync(int id)
+    public async Task<List<PostCategory>> GetAll()
     {
-        return await _queryable.SingleOrDefaultAsync(x => x.Id == id);
+        return await _queryable.ToListAsync();
     }
 
-    public PaginatedList<PostCategory> GetPaginatedPostCategory(string phone, DefaultPaginationFilter filter)
+    public async Task<PostCategory?> GetByPostCategoryIdAsync(int id)
+    {
+        return await _queryable.Include(i => i.Posts).ThenInclude(i=>i.PostComments).SingleOrDefaultAsync(x => x.Id == id && x.IsDeleted == false);
+    }
+
+    public PaginatedList<PostCategory> GetPaginatedPostCategory(DefaultPaginationFilter filter)
     {
         var query = _queryable;
         // Apply Keyword filtering
         if (!string.IsNullOrEmpty(filter.Keyword))
-        {
             query = query.Where(x => x.Name.Contains(filter.Keyword));
-        }
+
+        if (filter.IsDeleted.HasValue)
+            query = query.Where(x => x.IsDeleted == filter.IsDeleted);
+        
         // Get total count before applying pagination
         var count = query.Count();
         var items = new List<PostCategory>();
@@ -47,6 +55,8 @@ public class PostCategoryRepo : Repository<PostCategory>, IPostCategoryRepo
         {
             case SortByEnum.CreationDate:
                 items = query
+                    .Include(i=>i.Posts)
+                    .ThenInclude(i=>i.PostComments)
                     .OrderBy(x => x.CreatedAt)
                     .Skip((filter.Page - 1) * filter.PageSize)
                     .Take(filter.PageSize)
@@ -54,6 +64,8 @@ public class PostCategoryRepo : Repository<PostCategory>, IPostCategoryRepo
                 break;
             case SortByEnum.CreationDateDescending:
                 items = query
+                   .Include(i => i.Posts)
+                   .ThenInclude(i => i.PostComments)
                    .OrderByDescending(x => x.CreatedAt)
                    .Skip((filter.Page - 1) * filter.PageSize)
                    .Take(filter.PageSize)
