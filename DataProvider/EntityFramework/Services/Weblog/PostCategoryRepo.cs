@@ -32,9 +32,9 @@ public class PostCategoryRepo : Repository<PostCategory>, IPostCategoryRepo
         return await _queryable.ToListAsync();
     }
 
-    public async Task<PostCategory?> GetByPostCategoryIdAsync(int id)
+    public async Task<PostCategory> GetByPostCategoryIdAsync(int id)
     {
-        return await _queryable.Include(i => i.Posts).ThenInclude(i=>i.PostComments).SingleOrDefaultAsync(x => x.Id == id && x.IsDeleted == false);
+        return await _queryable.Include(i => i.Posts).ThenInclude(i=>i.PostComments).SingleOrDefaultAsync(x => x.Id == id && x.IsDeleted == false) ?? new PostCategory();
     }
 
     public PaginatedList<PostCategory> GetPaginatedPostCategory(DefaultPaginationFilter filter)

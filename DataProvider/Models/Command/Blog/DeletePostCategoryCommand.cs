@@ -10,4 +10,5 @@ public class DeletePostCategoryCommand
 {
     [Required( ErrorMessage =" Id is Required")]
     public int PostCategoryId { get; set; }
+
 }

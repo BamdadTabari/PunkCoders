@@ -2,11 +2,13 @@
 using DataProvider.EntityFramework.Repository;
 using DataProvider.Models.Command.Blog;
 using DataProvider.Models.Query.Blog;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
 namespace PunkCoders.Controllers.Admin;
-[Route("apc")]
+[Route("ap")]
 [ApiController]
-public class PostCategoryController(IUnitOfWork unitOfWork) : ControllerBase
+public class PostController(IUnitOfWork unitOfWork) : ControllerBase
 {
     [HttpPost]
     [Route("create")]
@@ -51,7 +53,7 @@ public class PostCategoryController(IUnitOfWork unitOfWork) : ControllerBase
             var entity = await unitOfWork.PostCategoryRepo.GetByPostCategoryIdAsync(editPostCategoryCommand.PostCategoryId);
             entity.UpdatedAt = DateTime.Now;
             entity.Name = editPostCategoryCommand.Name;
-            
+
             unitOfWork.PostCategoryRepo.Update(entity);
             var result = await unitOfWork.CommitAsync();
             if (!result)
@@ -86,7 +88,7 @@ public class PostCategoryController(IUnitOfWork unitOfWork) : ControllerBase
     {
         try
         {
-                return Ok(unitOfWork.PostCategoryRepo.GetPaginatedPostCategory(getPagedPostCategoryQuery.DefaultPaginationFilter));
+            return Ok(unitOfWork.PostCategoryRepo.GetPaginatedPostCategory(getPagedPostCategoryQuery.DefaultPaginationFilter));
         }
         catch (Exception ex)
         {
@@ -120,16 +122,17 @@ public class PostCategoryController(IUnitOfWork unitOfWork) : ControllerBase
             {
                 return BadRequest("not found");
             }
-            else {
+            else
+            {
                 entity.IsDeleted = true;
                 unitOfWork.PostCategoryRepo.Update(entity);
                 await unitOfWork.CommitAsync();
                 var children = await unitOfWork.PostRepo.GetAllCategoryPostsAsync(entity.Id);
-                foreach (var child in children) 
-                { 
+                foreach (var child in children)
+                {
                     child.IsDeleted = true;
                     unitOfWork.PostRepo.Update(child);
-                    
+
                     foreach (var comment in child.PostComments)
                     {
                         comment.IsDeleted = true;
