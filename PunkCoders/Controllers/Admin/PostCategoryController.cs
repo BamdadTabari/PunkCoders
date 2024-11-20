@@ -126,7 +126,18 @@ public class PostCategoryController(IUnitOfWork unitOfWork) : ControllerBase
                 entity.IsDeleted = true;
                 unitOfWork.PostCategoryRepo.Update(entity);
                 await unitOfWork.CommitAsync();
-                //var childs = await unitOfWork.PostCaRepo.GetAll();
+                var children = await unitOfWork.PostRepo.GetAllCategoryPostsAsync(entity.Id);
+                foreach (var child in children) 
+                { 
+                    child.IsDeleted = true;
+                    unitOfWork.PostRepo.Update(child);
+                    
+                    foreach (var comment in child.PostComments)
+                    {
+                        comment.IsDeleted = true;
+                        unitOfWork.PostCommentRepo.Update(comment);
+                    }
+                }
             }
             return Ok();
         }
