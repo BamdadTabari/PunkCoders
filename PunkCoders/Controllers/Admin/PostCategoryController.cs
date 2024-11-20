@@ -113,7 +113,7 @@ public class PostCategoryController(IUnitOfWork unitOfWork) : ControllerBase
 
     [HttpDelete]
     [Route("delete")]
-    public async IActionResult Delete([FromForm] DeletePostCategoryCommand deletePostCategoryCommand)
+    public async Task<IActionResult> Delete([FromForm] DeletePostCategoryCommand deletePostCategoryCommand)
     {
         try
         {
@@ -137,6 +137,7 @@ public class PostCategoryController(IUnitOfWork unitOfWork) : ControllerBase
                         comment.IsDeleted = true;
                         unitOfWork.PostCommentRepo.Update(comment);
                     }
+                    await unitOfWork.CommitAsync();
                 }
             }
             return Ok();

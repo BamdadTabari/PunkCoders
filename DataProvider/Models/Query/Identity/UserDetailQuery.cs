@@ -1,8 +1,7 @@
-﻿using DataProvider.Assistant.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DataProvider.Models.Query.Identity;
-public class UserDetailQuery(RequestInfo requestInfo) : IRequestInfo
+public class UserDetailQuery
 {
     [Required(ErrorMessage = "لطفا مقدار نام کاربری را پر کنید")]
     public string? UserName { get; set; }
@@ -15,5 +14,4 @@ public class UserDetailQuery(RequestInfo requestInfo) : IRequestInfo
     public bool PhoneNumberConfimed { get; set; }
     public bool TwoFactorEnabled { get; set; }
     public long AccessFaildCount { get; set; }
-    public RequestInfo RequestInfo { get; private set; } = requestInfo;
 }
