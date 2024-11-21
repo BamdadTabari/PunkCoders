@@ -6,7 +6,7 @@
         public DefaultPaginationFilter() { }
 
         public string? Keyword { get; set; }
-        public bool? IsDeleted { get; set; }
+        public bool? IsDeleted { get; set; } = false;
         public SortByEnum? SortBy { get; set; }
     }
 }

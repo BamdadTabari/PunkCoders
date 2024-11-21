@@ -1,6 +1,6 @@
 ﻿using DataProvider.EntityFramework.Entities.Blog;
 using DataProvider.EntityFramework.Repository;
-using DataProvider.Models.Command.Blog;
+using DataProvider.Models.Command.Blog.PostCategory;
 using DataProvider.Models.Query.Blog;
 using Microsoft.AspNetCore.Mvc;
 namespace PunkCoders.Controllers.Admin;

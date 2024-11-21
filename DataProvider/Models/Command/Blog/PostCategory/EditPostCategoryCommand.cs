@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace DataProvider.Models.Command.Blog;
+namespace DataProvider.Models.Command.Blog.PostCategory;
 public class EditPostCategoryCommand
 {
     [Required(ErrorMessage = "Name is required")]

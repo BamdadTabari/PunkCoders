@@ -1,5 +1,6 @@
 ﻿using DataProvider.EntityFramework.Configs;
 using DataProvider.EntityFramework.Services.Weblog;
+using Serilog;
 
 namespace DataProvider.EntityFramework.Repository;
 public interface IUnitOfWork : IDisposable
@@ -14,6 +15,7 @@ public interface IUnitOfWork : IDisposable
 public class UnitOfWork : IUnitOfWork
 {
     private readonly AppDbContext _context;
+    private readonly ILogger _logger;
     #region Blog
     public IPostCategoryRepo PostCategoryRepo { get; }
     public IPostRepo PostRepo { get; }
@@ -32,8 +34,11 @@ public class UnitOfWork : IUnitOfWork
     public UnitOfWork(AppDbContext context)
     {
         _context = context;
+        _logger = new LoggerConfiguration().WriteTo.Console()  // Also log to the console
+        .CreateLogger();
+
         #region Blog
-        PostCategoryRepo = new PostCategoryRepo(_context);
+        PostCategoryRepo = new PostCategoryRepo(_context, _logger);
         PostRepo = new PostRepo(_context);
         PostCommentRepo = new PostCommentRepo(_context);
         #endregion

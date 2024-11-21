@@ -19,6 +19,6 @@ public class PostRepo : Repository<Post>, IPostRepo
     }
     public async Task<List<Post>> GetAllCategoryPostsAsync(int categoryId)
     {
-        return await _queryable.Include(x=>x.PostComments).Where(x=>x.PostCategoryId == categoryId && x.IsDeleted == false).ToListAsync();
+        return await _queryable.Include(x => x.PostComments).Where(x => x.PostCategoryId == categoryId && x.IsDeleted == false).ToListAsync();
     }
 }

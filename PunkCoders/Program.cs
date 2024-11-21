@@ -1,6 +1,7 @@
 using DataProvider.EntityFramework.Configs;
 using DataProvider.EntityFramework.Repository;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -23,6 +24,19 @@ builder.Services.AddCors(policy =>
     .AllowAnyHeader()
     .AllowAnyMethod());
 });
+// Configure Serilog to log to Seq
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Month)
+    .Enrich.FromLogContext() // Enrich logs with context
+    .CreateLogger();
+
+
+builder.Host.UseSerilog(); // Replace default logging with Serilog
+
+
+builder.Host.UseSerilog();  // Use Serilog as the logging provider
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,6 +48,11 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors("Punk");
 app.UseHttpsRedirection();
+app.MapGet("/", () =>
+{
+    app.Logger.LogInformation("Hello from Serilog with Seq!");
+    return "Hello, World!";
+});
 
 app.UseAuthorization();
 
