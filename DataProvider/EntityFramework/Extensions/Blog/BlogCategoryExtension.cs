@@ -15,6 +15,7 @@ public static class BlogCategoryExtension
 
         return query;
     }
+     
 
     public static IQueryable<PostCategory> ApplySort(this IQueryable<PostCategory> query, SortByEnum? sortBy)
     {
