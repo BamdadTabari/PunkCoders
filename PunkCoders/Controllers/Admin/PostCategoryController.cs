@@ -2,7 +2,7 @@
 using DataProvider.EntityFramework.Entities.Blog;
 using DataProvider.EntityFramework.Repository;
 using DataProvider.Models.Command.Blog.PostCategory;
-using DataProvider.Models.Query.Blog;
+using DataProvider.Models.Query.Blog.PostCategory;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;

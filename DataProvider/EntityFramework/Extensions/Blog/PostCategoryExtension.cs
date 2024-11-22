@@ -1,6 +1,6 @@
 ﻿using DataProvider.Assistant.Pagination;
 using DataProvider.EntityFramework.Entities.Blog;
-using DataProvider.Models.Query.Blog;
+using DataProvider.Models.Query.Blog.PostCategory;
 
 namespace DataProvider.EntityFramework.Extensions.Blog;
 public static class PostCategoryExtension
@@ -16,7 +16,7 @@ public static class PostCategoryExtension
 
         return query;
     }
-     
+
 
     public static IQueryable<PostCategory> ApplySort(this IQueryable<PostCategory> query, SortByEnum? sortBy)
     {

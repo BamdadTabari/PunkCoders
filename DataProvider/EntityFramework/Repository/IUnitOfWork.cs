@@ -39,7 +39,7 @@ public class UnitOfWork : IUnitOfWork
 
         #region Blog
         PostCategoryRepo = new PostCategoryRepo(_context, _logger);
-        PostRepo = new PostRepo(_context,_logger);
+        PostRepo = new PostRepo(_context, _logger);
         PostCommentRepo = new PostCommentRepo(_context, _logger);
         #endregion
     }

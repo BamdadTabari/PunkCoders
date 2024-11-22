@@ -3,7 +3,7 @@ using DataProvider.EntityFramework.Configs;
 using DataProvider.EntityFramework.Entities.Blog;
 using DataProvider.EntityFramework.Extensions.Blog;
 using DataProvider.EntityFramework.Repository;
-using DataProvider.Models.Query.Blog;
+using DataProvider.Models.Query.Blog.PostCategory;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -83,7 +83,7 @@ public class PostCategoryRepo : Repository<PostCategory>, IPostCategoryRepo
         catch
         {
             _logger.Error("Error in GetPaginatedPostCategory");
-            return new PaginatedList<PostCategory>([]   , 0, filter.Page, filter.PageSize);
+            return new PaginatedList<PostCategory>([], 0, filter.Page, filter.PageSize);
         }
     }
-}   
+}

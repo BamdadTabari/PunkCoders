@@ -47,7 +47,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // Add in-memory caching service
-builder.Services.AddMemoryCache(); 
+builder.Services.AddMemoryCache();
 builder.Services.Configure<CacheOptions>(options =>
 {
     options.AbsoluteExpiration = TimeSpan.FromMinutes(10); // Global absolute expiration
