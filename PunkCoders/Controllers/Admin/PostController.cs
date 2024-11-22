@@ -68,7 +68,7 @@ public class PostController(IUnitOfWork unitOfWork) : ControllerBase
     }
     [HttpGet]
     [Route("get-by-id")]
-    public async Task<IActionResult> Get([FromQuery] GetPostCategoryQuery getPostCategoryQuery)
+    public async Task<IActionResult> Get([FromQuery] GetPostQuery getPostCategoryQuery)
     {
         try
         {
@@ -83,7 +83,7 @@ public class PostController(IUnitOfWork unitOfWork) : ControllerBase
 
     [HttpGet]
     [Route("get-by-filter")]
-    public IActionResult GetPaginated([FromQuery] GetPagedPostCategoryQuery getPagedPostCategoryQuery)
+    public IActionResult GetPaginated([FromQuery] GetPagedPostQuery getPagedPostCategoryQuery)
     {
         try
         {

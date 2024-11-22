@@ -90,7 +90,7 @@ public class PostCategoryController : ControllerBase
     // Get a specific post category by ID
     [HttpGet]
     [Route("get-by-id")]
-    public async Task<IActionResult> Get([FromQuery] GetPostCategoryQuery getPostCategoryQuery)
+    public async Task<IActionResult> Get([FromQuery] GetPostQuery getPostCategoryQuery)
     {
         string cacheKey = $"{CacheKey}_{getPostCategoryQuery.PostCategoryId}";
 
@@ -115,7 +115,7 @@ public class PostCategoryController : ControllerBase
     // Get paginated post categories
     [HttpGet]
     [Route("get-by-filter")]
-    public IActionResult GetPaginated([FromQuery] GetPagedPostCategoryQuery getPagedPostCategoryQuery)
+    public IActionResult GetPaginated([FromQuery] GetPagedPostQuery getPagedPostCategoryQuery)
     {
         string cacheKey = $"{CacheKey}_Filter_Pagination";
 

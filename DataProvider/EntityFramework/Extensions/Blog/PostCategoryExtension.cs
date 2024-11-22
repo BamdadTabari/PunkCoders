@@ -5,7 +5,7 @@ using DataProvider.Models.Query.Blog.PostCategory;
 namespace DataProvider.EntityFramework.Extensions.Blog;
 public static class PostCategoryExtension
 {
-    public static IQueryable<PostCategory> ApplyFilter(this IQueryable<PostCategory> query, GetPagedPostCategoryQuery filter)
+    public static IQueryable<PostCategory> ApplyFilter(this IQueryable<PostCategory> query, GetPagedPostQuery filter)
     {
 
         if (!string.IsNullOrEmpty(filter.Keyword))

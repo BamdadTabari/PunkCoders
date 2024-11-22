@@ -1,10 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace DataProvider.Models.Command.Blog.PostCategory;
 public class EditPostCategoryCommand
 {
-    [Required(ErrorMessage = "Name is required")]
+    [DisplayName("Name")]
+    [Required(ErrorMessage = "{0} is required")]
+    [MaxLength(150, ErrorMessage = "{0} must be at most {1} characters")]
     public string Name { get; set; }
-    [Required(ErrorMessage = " Id is Required")]
+    [DisplayName("PostCategoryId")]
+    [Required(ErrorMessage = "{0} is required")]
     public int PostCategoryId { get; set; }
 }
