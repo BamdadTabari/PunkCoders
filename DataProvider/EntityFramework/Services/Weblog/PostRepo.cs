@@ -19,7 +19,6 @@ public interface IPostRepo : IRepository<Post>
     Task<bool> AnyAsync(string name);
     Task<Post> GetByIdAsync(int id);
     PaginatedList<Post> GetPaginated(GetPagedPostQuery filter);
-    Task<List<Post>> GetAll();
 }
 
 public class PostRepo : Repository<Post>, IPostRepo
@@ -51,20 +50,6 @@ public class PostRepo : Repository<Post>, IPostRepo
 
             _logger.Error("Error in Post AnyAsync");
             return Task.FromResult(false);
-        }
-    }
-
-    public async Task<List<Post>> GetAll()
-    {
-        try
-        {
-            return await _queryable.ToListAsync();
-        }
-        catch
-        {
-
-            _logger.Error("Error in GetAll");
-            return [];
         }
     }
 

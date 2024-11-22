@@ -17,12 +17,14 @@ public class PostCategoryController : ControllerBase
     private readonly CacheOptions _cacheOptions;
     private readonly IUnitOfWork _unitOfWork;
     private const string CacheKey = "PostCategory";
+    private readonly ILogger _logger;
 
-    public PostCategoryController(IMemoryCache memoryCache, IOptions<CacheOptions> cacheOptions, IUnitOfWork unitOfWork)
+    public PostCategoryController(IMemoryCache memoryCache, IOptions<CacheOptions> cacheOptions, IUnitOfWork unitOfWork, ILogger logger)
     {
         _memoryCache = memoryCache;
         _cacheOptions = cacheOptions.Value;
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     // Create a new post category
@@ -54,7 +56,8 @@ public class PostCategoryController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            _logger.LogError(ex, "Error on create post category at {Time}", DateTime.UtcNow);
+            return BadRequest("Error On Create PostCategory");
         }
     }
 
@@ -83,6 +86,7 @@ public class PostCategoryController : ControllerBase
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error on create post category at {Time}", DateTime.UtcNow);
             return BadRequest(ex.Message);
         }
     }
@@ -141,6 +145,7 @@ public class PostCategoryController : ControllerBase
     public IActionResult ClearAllCache()
     {
         CacheManager.ClearKeysByPrefix(_memoryCache, CacheKey);
+        _logger.LogInformation("All cache for post categories has been cleared At {Time}", DateTime.UtcNow);
         return Ok("All cache for post categories has been cleared.");
     }
 
@@ -152,11 +157,27 @@ public class PostCategoryController : ControllerBase
         try
         {
             var entity = await _unitOfWork.PostCategoryRepo.GetByIdAsync(deletePostCategoryCommand.PostCategoryId);
-            if (entity == null) return BadRequest("Post category not found.");
+            if (entity == null) return NotFound("Post category not found.");
 
             entity.IsDeleted = true;
             _unitOfWork.PostCategoryRepo.Update(entity);
+            if (entity.Posts != null) {
 
+                foreach (var post in entity.Posts)
+                {
+                    post.IsDeleted = true;
+                    _unitOfWork.PostRepo.Update(post);
+
+                    if (post.PostComments != null)
+                    {
+                        foreach (var comment in post.PostComments)
+                        {
+                            comment.IsDeleted = true;
+                            _unitOfWork.PostCommentRepo.Update(comment);
+                        }
+                    }
+                }
+            }
             if (!await _unitOfWork.CommitAsync())
                 return BadRequest("Error occurred while deleting the category.");
 
@@ -167,6 +188,7 @@ public class PostCategoryController : ControllerBase
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error on Delete post category at {Time}", DateTime.UtcNow);
             return BadRequest(ex.Message);
         }
     }

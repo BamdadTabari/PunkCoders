@@ -1,4 +1,5 @@
-﻿using DataProvider.EntityFramework.Entities.Blog;
+﻿using DataProvider.Assistant.Pagination;
+using DataProvider.EntityFramework.Entities.Blog;
 using DataProvider.EntityFramework.Repository;
 using DataProvider.Models.Command.Blog.Post;
 using DataProvider.Models.Query.Blog.PostCategory;
@@ -15,13 +16,15 @@ public class PostController : ControllerBase
     private readonly IMemoryCache _memoryCache;
     private readonly CacheOptions _cacheOptions;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger _logger;
     private const string CacheKey = "Post";
 
-    public PostController(IMemoryCache memoryCache, IOptions<CacheOptions> cacheOptions, IUnitOfWork unitOfWork)
+    public PostController(IMemoryCache memoryCache, IOptions<CacheOptions> cacheOptions, IUnitOfWork unitOfWork, ILogger logger)
     {
         _memoryCache = memoryCache;
         _cacheOptions = cacheOptions.Value;
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
     [HttpPost]
     [Route("create")]
@@ -41,16 +44,17 @@ public class PostController : ControllerBase
                 Title = createPostCommand.Title,
             };
             await _unitOfWork.PostRepo.AddAsync(Entity);
-            var result = await _unitOfWork.CommitAsync();
-            if (!result)
-            {
-                return BadRequest("something went wrong");
-            }
-            return Ok();
+            if (!await _unitOfWork.CommitAsync())
+                return BadRequest("Error occurred while creating the post.");
+            // Clear related cache
+            CacheManager.ClearKeysByPrefix(_memoryCache, CacheKey);
+
+            return Ok("Post created successfully.");
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            _logger.LogError(ex, "Error on create post  at {Time}", DateTime.UtcNow);
+            return BadRequest("Error On Create Post");
         }
     }
     [HttpPut]
@@ -68,59 +72,72 @@ public class PostController : ControllerBase
             entity.Title = editPostCommand.Title;
 
             _unitOfWork.PostRepo.Update(entity);
-            var result = await _unitOfWork.CommitAsync();
-            if (!result)
-            {
-                return BadRequest("something went wrong");
-            }
-            return Ok();
+            if (!await _unitOfWork.CommitAsync())
+                return BadRequest("Error occurred while Updating the post.");
+            // Clear related cache
+            CacheManager.ClearKeysByPrefix(_memoryCache, CacheKey);
+
+            return Ok("Post updated successfully.");
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            _logger.LogError(ex, "Error on update post at {Time}", DateTime.UtcNow);
+            return BadRequest("Error On Update Post");
         }
     }
     [HttpGet]
     [Route("get-by-id")]
     public async Task<IActionResult> Get([FromQuery] GetPostQuery getPostQuery)
     {
-        try
+        string cacheKey = $"{CacheKey}_{getPostQuery.PostId}";
+
+        if (!_memoryCache.TryGetValue(cacheKey, out Post? result))
         {
-            var result = await _unitOfWork.PostRepo.GetByIdAsync(getPostQuery.PostId);
-            return Ok(result);
+            result = await _unitOfWork.PostRepo.GetByIdAsync(getPostQuery.PostId);
+
+            if (result == null) return NotFound("Post not found.");
+
+            _memoryCache.Set(cacheKey, result, new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = _cacheOptions.AbsoluteExpiration,
+                SlidingExpiration = _cacheOptions.SlidingExpiration
+            });
+
+            CacheManager.AddKey(cacheKey);
         }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+
+        return Ok(result);
     }
 
     [HttpGet]
     [Route("get-by-filter")]
     public IActionResult GetPaginated([FromQuery] GetPagedPostQuery getPagedPostQuery)
     {
-        try
+        string cacheKey = $"{CacheKey}_Filter_Pagination";
+
+        if (!_memoryCache.TryGetValue(cacheKey, out PaginatedList<Post>? result))
         {
-            return Ok(_unitOfWork.PostRepo.GetPaginated(getPagedPostQuery));
+            result = _unitOfWork.PostRepo.GetPaginated(getPagedPostQuery);
+
+            _memoryCache.Set(cacheKey, result, new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = _cacheOptions.AbsoluteExpiration,
+                SlidingExpiration = _cacheOptions.SlidingExpiration
+            });
+
+            CacheManager.AddKey(cacheKey);
         }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+
+        return Ok(result);
     }
 
-    [HttpGet]
-    [Route("get-all")]
-    public async Task<IActionResult> GetAll()
+    [HttpDelete]
+    [Route("clear-all-cache")]
+    public IActionResult ClearAllCache()
     {
-        try
-        {
-            return Ok(await _unitOfWork.PostRepo.GetAll());
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        CacheManager.ClearKeysByPrefix(_memoryCache, CacheKey);
+        _logger.LogInformation("All cache for posts has been cleared At {Time}", DateTime.UtcNow);
+        return Ok("All cache for posts has been cleared.");
     }
 
 
@@ -131,38 +148,30 @@ public class PostController : ControllerBase
         try
         {
             var entity = await _unitOfWork.PostRepo.GetByIdAsync(deletePostCommand.PostId);
-            if (entity == null)
-            {
-                return BadRequest("not found");
-            }
-            else
-            {
-                entity.IsDeleted = true;
-                _unitOfWork.PostRepo.Update(entity);
-                await _unitOfWork.CommitAsync();
-                var children = await _unitOfWork.PostRepo.GetAllCategoryPostsAsync(entity.Id);
-                foreach (var child in children)
-                {
-                    child.IsDeleted = true;
-                    _unitOfWork.PostRepo.Update(child);
+            if (entity == null) return NotFound("Post category not found.");
 
-                    if (child.PostComments != null)
-                    {
-                        foreach (var comment in child.PostComments)
-                        {
-                            comment.IsDeleted = true;
-                            _unitOfWork.PostCommentRepo.Update(comment);
-                        }
-                    }
-                   
-                    await _unitOfWork.CommitAsync();
+            entity.IsDeleted = true;
+            _unitOfWork.PostRepo.Update(entity);
+
+            if (entity.PostComments != null)
+            {
+                foreach (var comment in entity.PostComments)
+                {
+                    comment.IsDeleted = true;
+                    _unitOfWork.PostCommentRepo.Update(comment);
                 }
             }
-            return Ok();
+            if (!await _unitOfWork.CommitAsync())
+                return BadRequest("Error occurred while deleting the post.");
+            // Clear related cache
+            CacheManager.ClearKeysByPrefix(_memoryCache, CacheKey);
+
+            return Ok("Post deleted successfully.");
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            _logger.LogError(ex, "Error on delete post at {Time}", DateTime.UtcNow);
+            return BadRequest("Error On Delete Post");
         }
     }
 }
