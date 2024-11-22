@@ -10,8 +10,8 @@ namespace DataProvider.EntityFramework.Services.Weblog;
 public interface IPostCategoryRepo : IRepository<PostCategory>
 {
     Task<bool> AnyAsync(string name);
-    Task<PostCategory?> GetByPostCategoryIdAsync(int id);
-    PaginatedList<PostCategory> GetPaginatedPostCategory(DefaultPaginationFilter filter);
+    Task<PostCategory> GetByIdAsync(int id);
+    PaginatedList<PostCategory> GetPaginated(DefaultPaginationFilter filter);
     Task<List<PostCategory>> GetAll();
 }
 
@@ -31,7 +31,6 @@ public class PostCategoryRepo : Repository<PostCategory>, IPostCategoryRepo
     {
         try
         {
-            _logger.Error("Error in AnyAsync");
             return _queryable.AnyAsync(x => x.Name.Replace(" ", "").ToLower() == name.Replace(" ", "").ToLower());
 
 
@@ -39,7 +38,7 @@ public class PostCategoryRepo : Repository<PostCategory>, IPostCategoryRepo
         catch
         {
 
-            _logger.Error("Error in GetAll");
+            _logger.Error("Error in PostCategory AnyAsync");
             return Task.FromResult(false);
         }
     }
@@ -58,7 +57,7 @@ public class PostCategoryRepo : Repository<PostCategory>, IPostCategoryRepo
         }
     }
 
-    public async Task<PostCategory> GetByPostCategoryIdAsync(int id)
+    public async Task<PostCategory> GetByIdAsync(int id)
     {
         try
         {
@@ -71,7 +70,7 @@ public class PostCategoryRepo : Repository<PostCategory>, IPostCategoryRepo
         }
     }
 
-    public PaginatedList<PostCategory> GetPaginatedPostCategory(DefaultPaginationFilter filter)
+    public PaginatedList<PostCategory> GetPaginated(DefaultPaginationFilter filter)
     {
 
         try
@@ -83,7 +82,7 @@ public class PostCategoryRepo : Repository<PostCategory>, IPostCategoryRepo
         catch
         {
             _logger.Error("Error in GetPaginatedPostCategory");
-            return new PaginatedList<PostCategory>(new List<PostCategory>(), 0, filter.Page, filter.PageSize);
+            return new PaginatedList<PostCategory>([]   , 0, filter.Page, filter.PageSize);
         }
     }
-}
+}   

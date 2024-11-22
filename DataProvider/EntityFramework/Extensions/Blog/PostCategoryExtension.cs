@@ -2,7 +2,7 @@
 using DataProvider.EntityFramework.Entities.Blog;
 
 namespace DataProvider.EntityFramework.Extensions.Blog;
-public static class BlogCategoryExtension
+public static class PostCategoryExtension
 {
     public static IQueryable<PostCategory> ApplyFilter(this IQueryable<PostCategory> query, DefaultPaginationFilter filter)
     {
