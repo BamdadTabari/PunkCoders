@@ -1,8 +1,12 @@
 using DataProvider.EntityFramework.Configs;
 using DataProvider.EntityFramework.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using PunkCoders.Configs;
 using Serilog;
+using tusdotnet;
+using tusdotnet.Models;
+using tusdotnet.Stores;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -54,6 +58,9 @@ builder.Services.Configure<CacheOptions>(options =>
     options.SlidingExpiration = TimeSpan.FromMinutes(5);   // Global sliding expiration
 });
 
+// image optimizer service config
+builder.Services.AddSingleton<ImageProcessingService>();
+
 // Build the application
 var app = builder.Build();
 
@@ -81,6 +88,18 @@ app.UseHttpsRedirection();
 //    return "Hello, World!";
 //});
 
+// Set up TusDotNet options
+app.MapTus("/files", ctx => Task.FromResult(new DefaultTusConfiguration
+{
+    Store = new TusDiskStore(Path.Combine(Directory.GetCurrentDirectory(), "tus-temp")),
+    UrlPath = "/files",
+    MaxAllowedUploadSizeInBytes = 20 * 1024 * 1024 // 20 MB limit
+}));
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "optimized")),
+    RequestPath = "/optimized"
+});
 app.UseAuthorization();
 
 app.MapControllers();

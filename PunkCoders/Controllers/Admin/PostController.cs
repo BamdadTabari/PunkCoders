@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using PunkCoders.Configs;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace PunkCoders.Controllers.Admin;
 [Route("ap")]
@@ -34,7 +36,32 @@ public class PostController : ControllerBase
         {
             // if name exist
             if (await _unitOfWork.PostRepo.AnyAsync(createPostCommand.Title))
-                return BadRequest("Post is exist");
+                return BadRequest("Post is exist"); // Define folder path
+            
+            var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(),"files");
+            Directory.CreateDirectory(uploadsFolderPath); // Ensure the folder exists
+
+            // Generate a unique file name
+            var imageFileName = $"{Guid.NewGuid()}{Path.GetExtension(createPostCommand.Image.FileName)}";
+            var imagePath = Path.Combine(uploadsFolderPath, imageFileName);
+
+            // Optimize and save the image directly
+            using (var stream = createPostCommand.Image.OpenReadStream()) // Read the uploaded image
+            {
+                using var image = await Image.LoadAsync(stream);
+
+                // Perform optimization: resize and adjust quality
+                image.Mutate(x => x.Resize(new ResizeOptions
+                {
+                    Mode = ResizeMode.Max,
+                    Size = new Size(800, 600) // Example dimensions
+                }));
+
+                // Save the optimized image to disk
+                await image.SaveAsync(imagePath, new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder { Quality = 75 });
+            }
+
+
 
             var Entity = new Post()
             {
@@ -42,6 +69,13 @@ public class PostController : ControllerBase
                 UpdatedAt = DateTime.Now,
                 IsDeleted = false,
                 Title = createPostCommand.Title,
+                Content = createPostCommand.Content,
+                Image = imagePath,
+                AuthorId = 0, //TODO: FIX This,
+                IsPublished = createPostCommand.IsPublished,
+                PostCategoryId = createPostCommand.PostCategoryId,
+                ShortDescription = createPostCommand.ShortDescription,
+                
             };
             await _unitOfWork.PostRepo.AddAsync(Entity);
             if (!await _unitOfWork.CommitAsync())
