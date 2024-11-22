@@ -121,7 +121,7 @@ public class PostCategoryController : ControllerBase
 
         if (!_memoryCache.TryGetValue(cacheKey, out PaginatedList<PostCategory>? result))
         {
-            result = _unitOfWork.PostCategoryRepo.GetPaginated(getPagedPostCategoryQuery.DefaultPaginationFilter);
+            result = _unitOfWork.PostCategoryRepo.GetPaginated(getPagedPostCategoryQuery);
 
             _memoryCache.Set(cacheKey, result, new MemoryCacheEntryOptions
             {

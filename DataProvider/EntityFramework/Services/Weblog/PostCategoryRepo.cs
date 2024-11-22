@@ -3,6 +3,7 @@ using DataProvider.EntityFramework.Configs;
 using DataProvider.EntityFramework.Entities.Blog;
 using DataProvider.EntityFramework.Extensions.Blog;
 using DataProvider.EntityFramework.Repository;
+using DataProvider.Models.Query.Blog;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -11,7 +12,7 @@ public interface IPostCategoryRepo : IRepository<PostCategory>
 {
     Task<bool> AnyAsync(string name);
     Task<PostCategory> GetByIdAsync(int id);
-    PaginatedList<PostCategory> GetPaginated(DefaultPaginationFilter filter);
+    PaginatedList<PostCategory> GetPaginated(GetPagedPostCategoryQuery filter);
     Task<List<PostCategory>> GetAll();
 }
 
@@ -70,7 +71,7 @@ public class PostCategoryRepo : Repository<PostCategory>, IPostCategoryRepo
         }
     }
 
-    public PaginatedList<PostCategory> GetPaginated(DefaultPaginationFilter filter)
+    public PaginatedList<PostCategory> GetPaginated(GetPagedPostCategoryQuery filter)
     {
 
         try

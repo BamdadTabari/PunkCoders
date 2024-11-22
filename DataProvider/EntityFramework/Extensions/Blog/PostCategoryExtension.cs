@@ -1,10 +1,11 @@
 ﻿using DataProvider.Assistant.Pagination;
 using DataProvider.EntityFramework.Entities.Blog;
+using DataProvider.Models.Query.Blog;
 
 namespace DataProvider.EntityFramework.Extensions.Blog;
 public static class PostCategoryExtension
 {
-    public static IQueryable<PostCategory> ApplyFilter(this IQueryable<PostCategory> query, DefaultPaginationFilter filter)
+    public static IQueryable<PostCategory> ApplyFilter(this IQueryable<PostCategory> query, GetPagedPostCategoryQuery filter)
     {
 
         if (!string.IsNullOrEmpty(filter.Keyword))

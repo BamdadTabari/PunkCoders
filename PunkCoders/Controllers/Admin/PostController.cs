@@ -88,7 +88,7 @@ public class PostController(IUnitOfWork unitOfWork) : ControllerBase
     {
         try
         {
-            return Ok(unitOfWork.PostCategoryRepo.GetPaginated(getPagedPostCategoryQuery.DefaultPaginationFilter));
+            return Ok(unitOfWork.PostCategoryRepo.GetPaginated(getPagedPostCategoryQuery));
         }
         catch (Exception ex)
         {
