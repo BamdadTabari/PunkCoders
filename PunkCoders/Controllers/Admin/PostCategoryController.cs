@@ -90,7 +90,7 @@ public class PostCategoryController : ControllerBase
     // Get a specific post category by ID
     [HttpGet]
     [Route("get-by-id")]
-    public async Task<IActionResult> Get([FromQuery] GetPostQuery getPostCategoryQuery)
+    public async Task<IActionResult> Get([FromQuery] GetPostCategoryQuery getPostCategoryQuery)
     {
         string cacheKey = $"{CacheKey}_{getPostCategoryQuery.PostCategoryId}";
 

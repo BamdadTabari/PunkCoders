@@ -8,7 +8,7 @@ public class Post : BaseEntity
     public string Title { get; set; }
     public string ShortDescription { get; set; }
     public string Content { get; set; }
-    public int ViewCount { get; set; }
+    public int ViewCount { get; set; } = 0;
     public string Image { get; set; }
     public bool IsPublished { get; set; }
     public int LikeCount { get; set; } = 0;
@@ -18,7 +18,7 @@ public class Post : BaseEntity
     public User Author { get; set; }
     public int PostCategoryId { get; set; }
     public PostCategory PostCategory { get; set; }
-    public ICollection<PostComment> PostComments { get; set; }
+    public ICollection<PostComment>? PostComments { get; set; }
 }
 
 public class PostConfiguration : IEntityTypeConfiguration<Post>

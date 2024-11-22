@@ -4,6 +4,9 @@ using System.ComponentModel;
 namespace DataProvider.Models.Command.Blog.Post;
 public class EditPostCommand
 {
+    [DisplayName("PostId")]
+    [Required(ErrorMessage = "{0} is required")]
+    public int PostId { get; set; }
     [DisplayName("Title")]
     [Required(ErrorMessage = "{0} is required")]
     [MaxLength(150, ErrorMessage = "{0} cannot exceed {1} characters")]

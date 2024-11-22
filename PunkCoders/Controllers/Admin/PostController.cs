@@ -1,33 +1,47 @@
 ﻿using DataProvider.EntityFramework.Entities.Blog;
 using DataProvider.EntityFramework.Repository;
-using DataProvider.Models.Command.Blog.PostCategory;
+using DataProvider.Models.Command.Blog.Post;
 using DataProvider.Models.Query.Blog.PostCategory;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
+using PunkCoders.Configs;
 
 namespace PunkCoders.Controllers.Admin;
 [Route("ap")]
 [ApiController]
-public class PostController(IUnitOfWork unitOfWork) : ControllerBase
+public class PostController : ControllerBase
 {
+    private readonly IMemoryCache _memoryCache;
+    private readonly CacheOptions _cacheOptions;
+    private readonly IUnitOfWork _unitOfWork;
+    private const string CacheKey = "Post";
+
+    public PostController(IMemoryCache memoryCache, IOptions<CacheOptions> cacheOptions, IUnitOfWork unitOfWork)
+    {
+        _memoryCache = memoryCache;
+        _cacheOptions = cacheOptions.Value;
+        _unitOfWork = unitOfWork;
+    }
     [HttpPost]
     [Route("create")]
-    public async Task<IActionResult> Create([FromForm] CreatePostCategoryCommand createPostCategoryCommand)
+    public async Task<IActionResult> Create([FromForm] CreatePostCommand createPostCommand)
     {
         try
         {
             // if name exist
-            if (await unitOfWork.PostCategoryRepo.AnyAsync(createPostCategoryCommand.Name))
-                return BadRequest("PostCategory is exist");
+            if (await _unitOfWork.PostRepo.AnyAsync(createPostCommand.Title))
+                return BadRequest("Post is exist");
 
-            var Entity = new PostCategory()
+            var Entity = new Post()
             {
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
                 IsDeleted = false,
-                Name = createPostCategoryCommand.Name,
+                Title = createPostCommand.Title,
             };
-            await unitOfWork.PostCategoryRepo.AddAsync(Entity);
-            var result = await unitOfWork.CommitAsync();
+            await _unitOfWork.PostRepo.AddAsync(Entity);
+            var result = await _unitOfWork.CommitAsync();
             if (!result)
             {
                 return BadRequest("something went wrong");
@@ -41,20 +55,20 @@ public class PostController(IUnitOfWork unitOfWork) : ControllerBase
     }
     [HttpPut]
     [Route("edit")]
-    public async Task<IActionResult> Edit([FromForm] EditPostCategoryCommand editPostCategoryCommand)
+    public async Task<IActionResult> Edit([FromForm] EditPostCommand editPostCommand)
     {
         try
         {
             // if name exist
-            if (await unitOfWork.PostCategoryRepo.AnyAsync(editPostCategoryCommand.Name))
-                return BadRequest("PostCategory is exist");
+            if (await _unitOfWork.PostRepo.AnyAsync(editPostCommand.Title))
+                return BadRequest("Post is exist");
 
-            var entity = await unitOfWork.PostCategoryRepo.GetByIdAsync(editPostCategoryCommand.PostCategoryId);
+            var entity = await _unitOfWork.PostRepo.GetByIdAsync(editPostCommand.PostId);
             entity.UpdatedAt = DateTime.Now;
-            entity.Name = editPostCategoryCommand.Name;
+            entity.Title = editPostCommand.Title;
 
-            unitOfWork.PostCategoryRepo.Update(entity);
-            var result = await unitOfWork.CommitAsync();
+            _unitOfWork.PostRepo.Update(entity);
+            var result = await _unitOfWork.CommitAsync();
             if (!result)
             {
                 return BadRequest("something went wrong");
@@ -68,11 +82,11 @@ public class PostController(IUnitOfWork unitOfWork) : ControllerBase
     }
     [HttpGet]
     [Route("get-by-id")]
-    public async Task<IActionResult> Get([FromQuery] GetPostQuery getPostCategoryQuery)
+    public async Task<IActionResult> Get([FromQuery] GetPostQuery getPostQuery)
     {
         try
         {
-            var result = await unitOfWork.PostCategoryRepo.GetByIdAsync(getPostCategoryQuery.PostCategoryId);
+            var result = await _unitOfWork.PostRepo.GetByIdAsync(getPostQuery.PostId);
             return Ok(result);
         }
         catch (Exception ex)
@@ -83,11 +97,11 @@ public class PostController(IUnitOfWork unitOfWork) : ControllerBase
 
     [HttpGet]
     [Route("get-by-filter")]
-    public IActionResult GetPaginated([FromQuery] GetPagedPostQuery getPagedPostCategoryQuery)
+    public IActionResult GetPaginated([FromQuery] GetPagedPostQuery getPagedPostQuery)
     {
         try
         {
-            return Ok(unitOfWork.PostCategoryRepo.GetPaginated(getPagedPostCategoryQuery));
+            return Ok(_unitOfWork.PostRepo.GetPaginated(getPagedPostQuery));
         }
         catch (Exception ex)
         {
@@ -101,7 +115,7 @@ public class PostController(IUnitOfWork unitOfWork) : ControllerBase
     {
         try
         {
-            return Ok(await unitOfWork.PostCategoryRepo.GetAll());
+            return Ok(await _unitOfWork.PostRepo.GetAll());
         }
         catch (Exception ex)
         {
@@ -112,11 +126,11 @@ public class PostController(IUnitOfWork unitOfWork) : ControllerBase
 
     [HttpDelete]
     [Route("delete")]
-    public async Task<IActionResult> Delete([FromForm] DeletePostCategoryCommand deletePostCategoryCommand)
+    public async Task<IActionResult> Delete([FromForm] DeletePostCommand deletePostCommand)
     {
         try
         {
-            var entity = await unitOfWork.PostCategoryRepo.GetByIdAsync(deletePostCategoryCommand.PostCategoryId);
+            var entity = await _unitOfWork.PostRepo.GetByIdAsync(deletePostCommand.PostId);
             if (entity == null)
             {
                 return BadRequest("not found");
@@ -124,20 +138,24 @@ public class PostController(IUnitOfWork unitOfWork) : ControllerBase
             else
             {
                 entity.IsDeleted = true;
-                unitOfWork.PostCategoryRepo.Update(entity);
-                await unitOfWork.CommitAsync();
-                var children = await unitOfWork.PostRepo.GetAllCategoryPostsAsync(entity.Id);
+                _unitOfWork.PostRepo.Update(entity);
+                await _unitOfWork.CommitAsync();
+                var children = await _unitOfWork.PostRepo.GetAllCategoryPostsAsync(entity.Id);
                 foreach (var child in children)
                 {
                     child.IsDeleted = true;
-                    unitOfWork.PostRepo.Update(child);
+                    _unitOfWork.PostRepo.Update(child);
 
-                    foreach (var comment in child.PostComments)
+                    if (child.PostComments != null)
                     {
-                        comment.IsDeleted = true;
-                        unitOfWork.PostCommentRepo.Update(comment);
+                        foreach (var comment in child.PostComments)
+                        {
+                            comment.IsDeleted = true;
+                            _unitOfWork.PostCommentRepo.Update(comment);
+                        }
                     }
-                    await unitOfWork.CommitAsync();
+                   
+                    await _unitOfWork.CommitAsync();
                 }
             }
             return Ok();
