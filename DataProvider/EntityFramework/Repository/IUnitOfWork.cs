@@ -1,4 +1,5 @@
 ﻿using DataProvider.EntityFramework.Configs;
+using DataProvider.EntityFramework.Services.Identity;
 using DataProvider.EntityFramework.Services.Weblog;
 using Serilog;
 
@@ -8,6 +9,10 @@ public interface IUnitOfWork : IDisposable
     IPostCategoryRepo PostCategoryRepo { get; }
     IPostRepo PostRepo { get; }
     IPostCommentRepo PostCommentRepo { get; }
+
+    IUserRepo UserRepo { get; }
+    IRoleRepo RoleRepo { get; }
+    IUserRoleRepo UserRoleRepo { get; }
 
     Task<bool> CommitAsync();
 }
@@ -20,6 +25,12 @@ public class UnitOfWork : IUnitOfWork
     public IPostCategoryRepo PostCategoryRepo { get; }
     public IPostRepo PostRepo { get; }
     public IPostCommentRepo PostCommentRepo { get; }
+    #endregion
+
+    #region Identity
+    public IUserRepo UserRepo { get; }
+    public IRoleRepo RoleRepo { get; }
+    public IUserRoleRepo UserRoleRepo { get; }
     #endregion
 
     public async Task<bool> CommitAsync() => await _context.SaveChangesAsync() > 0;
@@ -41,6 +52,12 @@ public class UnitOfWork : IUnitOfWork
         PostCategoryRepo = new PostCategoryRepo(_context, _logger);
         PostRepo = new PostRepo(_context, _logger);
         PostCommentRepo = new PostCommentRepo(_context, _logger);
+        #endregion
+
+        #region Identity
+        UserRepo = new UserRepo(_context);
+        RoleRepo = new RoleRepo(_context);
+        UserRoleRepo = new UserRoleRepo(_context);
         #endregion
     }
 }

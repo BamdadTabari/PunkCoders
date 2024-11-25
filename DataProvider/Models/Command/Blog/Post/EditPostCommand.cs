@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using Microsoft.AspNetCore.Http;
 
 namespace DataProvider.Models.Command.Blog.Post;
 public class EditPostCommand
@@ -23,13 +24,11 @@ public class EditPostCommand
     [DisplayName("IsPublished")]
     [Required(ErrorMessage = "{0} is required")]
     public bool IsPublished { get; set; }
-
+    [DisplayName("Post Image")]
+    public IFormFile? Image { get; set; }
     // navigation
     [DisplayName("PostCategoryId")]
     [Required(ErrorMessage = "{0} is required")]
     public int PostCategoryId { get; set; }
-
-    [DisplayName("Image")]
-    public string? Image { get; set; }
 
 }
