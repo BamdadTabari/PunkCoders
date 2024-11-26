@@ -24,31 +24,47 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginCommand request)
     {
-        var user = _unitOfWork.UserRepo.GetUser();
-        
-        if ((user = _unitOfWork.UserRepo.GetUser(request.UserName)) ==  || !PasswordHasher.Check(user.PasswordHash, request.Password))
+        var user = await _unitOfWork.UserRepo.GetUser(request.EmailOrUserName);
+
+        if (user == null)
             return Unauthorized("Invalid credentials");
 
-        var roles = await _userManager.GetRolesAsync(user.Id);
-        var token = _tokenService.GenerateToken(user, roles);
+        if (!PasswordHasher.Check(user.PasswordHash, request.Password))
+        {
+            user.FailedLoginCount++;
 
-        return Ok(new { Token = token });
+            return Unauthorized("Invalid credentials");
+        }
+
+        //var roles = await _userManager.GetRolesAsync(user.Id);
+       // var token = _tokenService.GenerateToken(user, roles);
+
+        ///return Ok(new { Token = token });
+        return Ok();
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+    public async Task<IActionResult> Register([FromBody] UserForRegistrationCommand request)
     {
+        if (await _unitOfWork.UserRepo.AnyExistEmail(request.Email))
+            return BadRequest("Email already exists");
+
+        if (await _unitOfWork.UserRepo.AnyExistUserName(request.UserName))
+            return BadRequest("Username already exists");
+
         var user = new User
         {
-            Username = request.Username,
+            Username = request.UserName,
             Email = request.Email,
-            Mobile = request.Mobile,
+            Mobile = request.PhoneNumber,
             PasswordHash = PasswordHasher.Hash(request.Password),
             SecurityStamp = StampGenerator.CreateSecurityStamp(16),
             State = UserStateEnum.Active
         };
 
-        await _userManager.CreateAsync(user);
+        await _unitOfWork.UserRepo.AddAsync(user);
+        await _unitOfWork.CommitAsync();
+
         return Ok("User registered successfully.");
     }
 }

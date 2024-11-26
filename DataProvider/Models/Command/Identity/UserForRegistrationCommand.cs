@@ -9,6 +9,7 @@ namespace DataProvider.Models.Command.Identity
         [EmailAddress]
         [Required(ErrorMessage = "لطفا ایمیلتان را وارد کنید.")]
         public string Email { get; set; }
+
         [Required(ErrorMessage = "لطفا شماره تماستان را وارد کنید.")]
         public string PhoneNumber { get; set; }
         [Required(ErrorMessage = "لطفا پسوردتان را وارد کنید.")]

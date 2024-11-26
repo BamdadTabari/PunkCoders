@@ -28,11 +28,11 @@ public class PostCategoryRepo : Repository<PostCategory>, IPostCategoryRepo
         _logger = logger;
     }
 
-    public Task<bool> AnyAsync(string name)
+    public async Task<bool> AnyAsync(string name)
     {
         try
         {
-            return _queryable.AnyAsync(x => x.Name.Replace(" ", "").ToLower() == name.Replace(" ", "").ToLower());
+            return await _queryable.AnyAsync(x => x.Name.Replace(" ", "").ToLower() == name.Replace(" ", "").ToLower());
 
 
         }
@@ -40,7 +40,7 @@ public class PostCategoryRepo : Repository<PostCategory>, IPostCategoryRepo
         {
 
             _logger.Error("Error in PostCategory AnyAsync");
-            return Task.FromResult(false);
+            return await Task.FromResult(false);
         }
     }
 

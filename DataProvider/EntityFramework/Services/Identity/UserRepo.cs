@@ -1,22 +1,80 @@
 ﻿using DataProvider.EntityFramework.Configs;
+using DataProvider.EntityFramework.Entities.Blog;
 using DataProvider.EntityFramework.Entities.Identity;
 using DataProvider.EntityFramework.Repository;
+using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace DataProvider.EntityFramework.Services.Identity;
 public interface IUserRepo : IRepository<User>
 {
-    Task<User> GetUser(string username);
-    Task<bool> AnyExist(string username);
+    Task<User> GetUser(string usernameOrEmail);
+    Task<bool> AnyExistUserName(string username);
+    Task<bool> AnyExistEmail(string email);
 }
-public class UserRepo(AppDbContext context) : Repository<User>(context), IUserRepo
+public class UserRepo : Repository<User>, IUserRepo
 {
-    public Task<bool> AnyExist(string username)
+    private readonly IQueryable<User> _queryable;
+
+    private readonly ILogger _logger;
+
+    public UserRepo(AppDbContext context, ILogger logger) : base(context)
     {
-        throw new NotImplementedException();
+        _queryable = DbContext.Set<User>();
+        _logger = logger;
     }
 
-    public Task<User> GetUser(string username)
+    /// <summary>
+    /// Check if user exist, in case not exist return false, in case query error return false, in case exist return true
+    /// </summary>
+    /// <param name="email"></param>
+    /// <returns></returns>
+    public async Task<bool> AnyExistEmail(string email)
     {
-        return 
+        try
+        {
+            return await _queryable.AnyAsync(x => x.Email == email);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("Error in User AnyAsync", ex);
+            return await Task.FromResult(false);
+        }
+    }
+
+    /// <summary>
+    /// Check if user exist, in case not exist return false, in case query error return false, in case exist return true
+    /// </summary>
+    /// <param name="username"></param>
+    /// <returns></returns>
+    public async Task<bool> AnyExistUserName(string username)
+    {
+        try
+        {
+            return await _queryable.AnyAsync(x => x.Username == username);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("Error in User AnyExistUserName");
+            return await Task.FromResult(false);
+        }
+    }
+
+    /// <summary>
+    /// Get User by username Or Email, in case not exist return new User, in query error return new User
+    /// </summary>
+    /// <param name="username"></param>
+    /// <returns></returns>
+    public async Task<User> GetUser(string usernameOrEmail)
+    {
+        try
+        {
+            return await _queryable.FirstOrDefaultAsync(x => x.Username == usernameOrEmail || x.Email == usernameOrEmail) ?? new User();
+        }
+        catch
+        {
+            _logger.Error("Error in GetAll");
+            return new User();
+        }
     }
 }
