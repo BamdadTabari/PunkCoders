@@ -55,7 +55,7 @@ public class UserRepo : Repository<User>, IUserRepo
         }
         catch (Exception ex)
         {
-            _logger.Error("Error in User AnyExistUserName");
+            _logger.Error("Error in User AnyExistUserName", ex);
             return await Task.FromResult(false);
         }
     }
@@ -71,9 +71,9 @@ public class UserRepo : Repository<User>, IUserRepo
         {
             return await _queryable.FirstOrDefaultAsync(x => x.Username == usernameOrEmail || x.Email == usernameOrEmail) ?? new User();
         }
-        catch
+        catch (Exception ex)
         {
-            _logger.Error("Error in GetAll");
+            _logger.Error("Error in Get User", ex);
             return new User();
         }
     }

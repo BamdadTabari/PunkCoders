@@ -32,12 +32,19 @@ public class AuthController : ControllerBase
         if (!PasswordHasher.Check(user.PasswordHash, request.Password))
         {
             user.FailedLoginCount++;
+            _unitOfWork.UserRepo.Update(user);
+            if (user.FailedLoginCount >= 5)
+            {
+                user.IsLockedOut = true;
+                _unitOfWork.UserRepo.Update(user);
+                return Unauthorized("your account is locked out. Use Recovery Option to reset your password.");
+            }
 
             return Unauthorized("Invalid credentials");
         }
 
         //var roles = await _userManager.GetRolesAsync(user.Id);
-       // var token = _tokenService.GenerateToken(user, roles);
+        // var token = _tokenService.GenerateToken(user, roles);
 
         ///return Ok(new { Token = token });
         return Ok();

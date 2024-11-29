@@ -55,9 +55,9 @@ public class UnitOfWork : IUnitOfWork
         #endregion
 
         #region Identity
-        UserRepo = new UserRepo(_context);
-        RoleRepo = new RoleRepo(_context);
-        UserRoleRepo = new UserRoleRepo(_context);
+        UserRepo = new UserRepo(_context, _logger);
+        RoleRepo = new RoleRepo(_context, _logger);
+        UserRoleRepo = new UserRoleRepo(_context, _logger);
         #endregion
     }
 }

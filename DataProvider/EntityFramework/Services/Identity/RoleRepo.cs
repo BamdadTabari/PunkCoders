@@ -12,7 +12,8 @@ using System.Threading.Tasks;
 namespace DataProvider.EntityFramework.Services.Identity;
 public interface IRoleRepo: IRepository<Role>
 {
-    Task<Role> GetRoleByName(string title);
+    Task<Role> GetRole(string title);
+    Task<Role> GetRole(int id);
     Task<bool> AnyExist(string title);
 }
 public class RoleRepo : Repository<Role>, IRoleRepo
@@ -40,11 +41,23 @@ public class RoleRepo : Repository<Role>, IRoleRepo
         }
     }
 
-    public async Task<Role> GetRoleByName(string title)
+    public async Task<Role> GetRole(string title)
     {
         try
         {
             return await _queryable.SingleOrDefaultAsync(x => x.Title == title) ?? new Role();
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("Error in Get Role By title", ex);
+            return new Role();
+        }
+    }
+    public async Task<Role> GetRole(int id)
+    {
+        try
+        {
+            return await _queryable.SingleOrDefaultAsync(x => x.Id == id) ?? new Role();
         }
         catch (Exception ex)
         {
