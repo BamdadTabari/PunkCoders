@@ -20,7 +20,7 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginCommand request)
+    public async Task<IActionResult> Login([FromForm] LoginCommand request)
     {
         var user = await _unitOfWork.UserRepo.GetUser(request.EmailOrUserName);
 
@@ -48,7 +48,7 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] UserForRegistrationCommand request)
+    public async Task<IActionResult> Register([FromForm] UserForRegistrationCommand request)
     {
         if (await _unitOfWork.UserRepo.AnyExistEmail(request.Email))
             return BadRequest("Email already exists");
