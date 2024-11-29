@@ -1,10 +1,8 @@
-﻿using DataProvider.Assistant.Pagination;
-using DataProvider.EntityFramework.Configs;
+﻿using DataProvider.EntityFramework.Configs;
 using DataProvider.EntityFramework.Entities.Identity;
 using DataProvider.EntityFramework.Repository;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using System.Security.Cryptography.X509Certificates;
 
 namespace DataProvider.EntityFramework.Services.Identity;
 

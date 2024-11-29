@@ -37,8 +37,8 @@ public class PostController : ControllerBase
             // if name exist
             if (await _unitOfWork.PostRepo.AnyAsync(createPostCommand.Title))
                 return BadRequest("Post is exist"); // Define folder path
-            
-            var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(),"files");
+
+            var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "files");
             Directory.CreateDirectory(uploadsFolderPath); // Ensure the folder exists
 
             // Generate a unique file name
@@ -75,7 +75,7 @@ public class PostController : ControllerBase
                 IsPublished = createPostCommand.IsPublished,
                 PostCategoryId = createPostCommand.PostCategoryId,
                 ShortDescription = createPostCommand.ShortDescription,
-                
+
             };
             await _unitOfWork.PostRepo.AddAsync(Entity);
             if (!await _unitOfWork.CommitAsync())

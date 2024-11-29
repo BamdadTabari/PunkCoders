@@ -1,5 +1,4 @@
 ﻿using DataProvider.EntityFramework.Configs;
-using DataProvider.EntityFramework.Entities.Blog;
 using DataProvider.EntityFramework.Entities.Identity;
 using DataProvider.EntityFramework.Repository;
 using Microsoft.EntityFrameworkCore;
