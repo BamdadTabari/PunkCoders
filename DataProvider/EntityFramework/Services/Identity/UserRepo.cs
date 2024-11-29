@@ -7,7 +7,8 @@ using Serilog;
 namespace DataProvider.EntityFramework.Services.Identity;
 public interface IUserRepo : IRepository<User>
 {
-    Task<User> GetUser(string usernameOrEmail);
+    Task<User?> GetUser(string usernameOrEmail);
+    Task<User?> GetUser(int Id);
     Task<bool> AnyExistUserName(string username);
     Task<bool> AnyExistEmail(string email);
 }
@@ -64,16 +65,29 @@ public class UserRepo : Repository<User>, IUserRepo
     /// </summary>
     /// <param name="username"></param>
     /// <returns></returns>
-    public async Task<User> GetUser(string usernameOrEmail)
+    public async Task<User?> GetUser(string usernameOrEmail)
     {
         try
         {
-            return await _queryable.FirstOrDefaultAsync(x => x.Username == usernameOrEmail || x.Email == usernameOrEmail) ?? new User();
+            return await _queryable.FirstOrDefaultAsync(x => x.Username == usernameOrEmail || x.Email == usernameOrEmail);
         }
         catch (Exception ex)
         {
             _logger.Error("Error in Get User", ex);
-            return new User();
+            return null;
+        }
+    }
+
+    public async Task<User?> GetUser(int Id)
+    {
+        try
+        {
+            return await _queryable.SingleOrDefaultAsync(x => x.Id == Id);
+        }
+        catch (Exception ex)
+        {
+            _logger.Error("Error in Get User By Id", ex);
+            return null;
         }
     }
 }

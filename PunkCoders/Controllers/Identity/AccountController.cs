@@ -1,6 +1,7 @@
 ﻿using DataProvider.Assistant.Helpers;
 using DataProvider.EntityFramework.Repository;
 using DataProvider.Models.Command.Identity;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PunkCoders.Controllers.Identity;
@@ -18,7 +19,7 @@ public class AccountController : Controller
     }
 
     [HttpPost("reset-password")]
-    public async Task<IActionResult> ResetPassword([FromBody] LoginCommand request)
+    public async Task<IActionResult> ResetPassword([FromForm] LoginCommand request)
     {
         var user = await _unitOfWork.UserRepo.GetUser(request.EmailOrUserName);
 
@@ -45,27 +46,21 @@ public class AccountController : Controller
         return Ok(new { Token = token });
     }
 
-    [HttpPut("change-password")]
-    public async Task<IActionResult> ChangePassword([FromBody] LoginCommand request)
+    [HttpPatch("change-password")]
+    public async Task<IActionResult> ChangePassword([FromForm] PasswordResetCommand request)
     {
-        var user = await _unitOfWork.UserRepo.GetUser(request.EmailOrUserName);
+        var user = await _unitOfWork.UserRepo.GetUser(request.UserId);
 
         if (user == null)
             return Unauthorized("Invalid credentials");
 
-        if (!PasswordHasher.Check(user.PasswordHash, request.Password))
+        if (!PasswordHasher.Check(user.PasswordHash, request.OldPassword))
         {
-            user.FailedLoginCount++;
-            _unitOfWork.UserRepo.Update(user);
-            if (user.FailedLoginCount >= 5)
-            {
-                user.IsLockedOut = true;
-                _unitOfWork.UserRepo.Update(user);
-                return Unauthorized("your account is locked out. Use Recovery Option to reset your password.");
-            }
-
             return Unauthorized("Invalid credentials");
         }
+        user.PasswordHash = PasswordHasher.Hash(request.NewPassword);
+        _unitOfWork.UserRepo.Update(user);
+        await _unitOfWork.CommitAsync();
 
         var role = _unitOfWork.UserRoleRepo.GetUserRolesByUserId(user.Id);
         var token = _tokenService.GenerateToken(user, role.Select(x => x.Role.Title).ToList());
