@@ -3,6 +3,8 @@ using DataProvider.Certain.Enums;
 using DataProvider.EntityFramework.Entities.Identity;
 using DataProvider.EntityFramework.Repository;
 using DataProvider.Models.Command.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PunkCoders.Controllers.Identity;
@@ -47,6 +49,7 @@ public class AuthenticationController : ControllerBase
         return Ok(new { Token = token });
     }
 
+    // TODO: send email to user, Get Code from email
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromForm] UserForRegistrationCommand request)
     {
@@ -63,6 +66,7 @@ public class AuthenticationController : ControllerBase
             Mobile = request.PhoneNumber,
             PasswordHash = PasswordHasher.Hash(request.Password),
             SecurityStamp = StampGenerator.CreateSecurityStamp(16),
+            // TODO: send email to user, Get Code from email
             State = UserStateEnum.Active
         };
 
@@ -71,4 +75,38 @@ public class AuthenticationController : ControllerBase
 
         return Ok("User registered successfully.");
     }
+
+    [HttpGet("current-user")]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        var userId = _tokenService.GetUserIdFromClaims(User);
+        if (userId == null)
+        {
+            return Unauthorized(); // User is not logged in
+        }
+        var user = await _unitOfWork.UserRepo.GetUser(userId);
+        return Ok(user);
+    }
+
+
+    [HttpPost("logout")]
+    [Authorize]
+    public async Task<IActionResult> Logout()
+    {
+        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        if (string.IsNullOrWhiteSpace(token))
+            return BadRequest("Token is required");
+
+        var expiryMinutes = _tokenService.GetTokenExpiryMinutes(token);
+        await _unitOfWork.TokenBlacklistRepo.AddAsync(new BlacklistedToken
+        {
+            Token = token,
+            ExpiryDate = DateTime.UtcNow.AddMinutes(expiryMinutes)
+        });
+
+        await _unitOfWork.CommitAsync();
+
+        return Ok(new { Message = "Logged out successfully." });
+    }
+
 }

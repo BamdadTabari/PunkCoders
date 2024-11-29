@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace DataProvider.Models.Command.Identity;
-public class PasswordResetCommand
+public class PasswordChangeCommand
 {
     [Required]
-    public string EmailOrUserName { get; set; }
+    public int UserId { get; set; }
+    [Required]
+    public string OldPassword { get; set; }
     [Required]
     public string NewPassword { get; set; }
-    public string? ConfimCode { get; set; }
-
 }

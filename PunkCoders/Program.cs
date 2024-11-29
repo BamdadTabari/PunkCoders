@@ -1,7 +1,10 @@
 using DataProvider.Certain.Configs;
 using DataProvider.EntityFramework.Configs;
 using DataProvider.EntityFramework.Repository;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using PunkCoders.Configs;
 using Serilog;
@@ -67,7 +70,13 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(configuration.GetConnectionString("ServerDbConnection")).EnableDetailedErrors();
+    options.ConfigureWarnings(warnings =>
+    warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
 });
+// Add Hangfire services
+builder.Services.AddHangfire(config =>
+    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddHangfireServer();
 
 // Add CORS policy
 builder.Services.AddCors(policy =>
@@ -86,6 +95,12 @@ Log.Logger = new LoggerConfiguration()
 
 // Replace default logging with Serilog
 builder.Host.UseSerilog();
+builder.Services.AddScoped<TokenCleanupTask>();
+RecurringJob.AddOrUpdate<TokenCleanupTask>(
+    "token-cleanup",
+    task => task.ExecuteAsync(),
+    Cron.Hourly // Run every hour
+);
 
 // Add in-memory caching service
 builder.Services.AddMemoryCache();
@@ -139,6 +154,11 @@ app.MapTus("/files", ctx => Task.FromResult(new DefaultTusConfiguration
 //    RequestPath = "/optimized"
 //});
 //app.UseHsts();
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = new[] { new HangfireAuthorizationFilter() }
+});
+app.UseMiddleware<TokenBlacklistMiddleware>();
 // Configure middleware
 app.UseAuthentication();
 app.UseAuthorization();

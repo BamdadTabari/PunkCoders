@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataProvider.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241119165553_Init1")]
-    partial class Init1
+    [Migration("20241129201502_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace DataProvider.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Base.EntityFramework.Entities.Blog.Post", b =>
+            modelBuilder.Entity("DataProvider.EntityFramework.Entities.Blog.Post", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -85,7 +85,7 @@ namespace DataProvider.Migrations
                     b.ToTable("Post");
                 });
 
-            modelBuilder.Entity("Base.EntityFramework.Entities.Blog.PostCategory", b =>
+            modelBuilder.Entity("DataProvider.EntityFramework.Entities.Blog.PostCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -113,7 +113,7 @@ namespace DataProvider.Migrations
                     b.ToTable("PostCategory");
                 });
 
-            modelBuilder.Entity("Base.EntityFramework.Entities.Blog.PostComment", b =>
+            modelBuilder.Entity("DataProvider.EntityFramework.Entities.Blog.PostComment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -148,7 +148,39 @@ namespace DataProvider.Migrations
                     b.ToTable("PostComment");
                 });
 
-            modelBuilder.Entity("Base.EntityFramework.Entities.Identity.Role", b =>
+            modelBuilder.Entity("DataProvider.EntityFramework.Entities.Identity.BlacklistedToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("BlacklistedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BlacklistedToken");
+                });
+
+            modelBuilder.Entity("DataProvider.EntityFramework.Entities.Identity.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -178,14 +210,38 @@ namespace DataProvider.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 11, 19, 8, 55, 53, 110, DateTimeKind.Local).AddTicks(5091),
+                            CreatedAt = new DateTime(2024, 11, 29, 12, 15, 1, 961, DateTimeKind.Local).AddTicks(6489),
                             IsDeleted = false,
                             Title = "Owner",
-                            UpdatedAt = new DateTime(2024, 11, 19, 8, 55, 53, 110, DateTimeKind.Local).AddTicks(5104)
+                            UpdatedAt = new DateTime(2024, 11, 29, 12, 15, 1, 961, DateTimeKind.Local).AddTicks(6502)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 11, 29, 12, 15, 1, 961, DateTimeKind.Local).AddTicks(6520),
+                            IsDeleted = false,
+                            Title = "Admin",
+                            UpdatedAt = new DateTime(2024, 11, 29, 12, 15, 1, 961, DateTimeKind.Local).AddTicks(6523)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2024, 11, 29, 12, 15, 1, 961, DateTimeKind.Local).AddTicks(6525),
+                            IsDeleted = false,
+                            Title = "Writer",
+                            UpdatedAt = new DateTime(2024, 11, 29, 12, 15, 1, 961, DateTimeKind.Local).AddTicks(6527)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2024, 11, 29, 12, 15, 1, 961, DateTimeKind.Local).AddTicks(6529),
+                            IsDeleted = false,
+                            Title = "Reader",
+                            UpdatedAt = new DateTime(2024, 11, 29, 12, 15, 1, 961, DateTimeKind.Local).AddTicks(6530)
                         });
                 });
 
-            modelBuilder.Entity("Base.EntityFramework.Entities.Identity.User", b =>
+            modelBuilder.Entity("DataProvider.EntityFramework.Entities.Identity.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -210,6 +266,9 @@ namespace DataProvider.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEmailConfirmed")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsLockedOut")
@@ -266,24 +325,25 @@ namespace DataProvider.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "4FXXIH408SZ9EM0TVUAHF1OV5N2SXC96",
-                            CreatedAt = new DateTime(2024, 11, 19, 8, 55, 53, 137, DateTimeKind.Local).AddTicks(9495),
+                            ConcurrencyStamp = "AVJLJO8MZPNS0EU06K2YPWC11FHCDMG7",
+                            CreatedAt = new DateTime(2024, 11, 29, 12, 15, 1, 988, DateTimeKind.Local).AddTicks(7678),
                             Email = "bamdadtabari@outlook.com",
                             FailedLoginCount = 0,
                             IsDeleted = false,
+                            IsEmailConfirmed = false,
                             IsLockedOut = false,
                             IsMobileConfirmed = false,
-                            LastPasswordChangeTime = new DateTime(2024, 11, 19, 8, 55, 53, 137, DateTimeKind.Local).AddTicks(8883),
+                            LastPasswordChangeTime = new DateTime(2024, 11, 29, 12, 15, 1, 988, DateTimeKind.Local).AddTicks(7195),
                             Mobile = "09301724389",
-                            PasswordHash = "E38Bv6tSfRLCGabh0RsGpI/DtfI3NprJczneA6uXP2I=.uRAgkRUuBzNaGxfNm0YFwg==",
-                            SecurityStamp = "UIE5Y6RGJDF19RQ5YPA9QFN7O326JC40",
+                            PasswordHash = "183+L5O8zIiQrakIbQT9KfZ/94Pqhw4EblDmrif/t0w=.YLcvHV8Sz0UWUz3scCM3lQ==",
+                            SecurityStamp = "7CY36WHO2Z83IYWAYG0SNJTTCUT5IXU7",
                             State = "Active",
-                            UpdatedAt = new DateTime(2024, 11, 19, 8, 55, 53, 137, DateTimeKind.Local).AddTicks(9505),
+                            UpdatedAt = new DateTime(2024, 11, 29, 12, 15, 1, 988, DateTimeKind.Local).AddTicks(7687),
                             Username = "Illegible_Owner"
                         });
                 });
 
-            modelBuilder.Entity("Base.EntityFramework.Entities.Identity.UserRole", b =>
+            modelBuilder.Entity("DataProvider.EntityFramework.Entities.Identity.UserRole", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -315,21 +375,21 @@ namespace DataProvider.Migrations
                             UserId = 1,
                             RoleId = 1,
                             Id = 0,
-                            CreatedAt = new DateTime(2024, 11, 19, 8, 55, 53, 107, DateTimeKind.Local).AddTicks(2564),
+                            CreatedAt = new DateTime(2024, 11, 29, 12, 15, 1, 958, DateTimeKind.Local).AddTicks(6731),
                             IsDeleted = false,
-                            UpdatedAt = new DateTime(2024, 11, 19, 8, 55, 53, 109, DateTimeKind.Local).AddTicks(6727)
+                            UpdatedAt = new DateTime(2024, 11, 29, 12, 15, 1, 960, DateTimeKind.Local).AddTicks(8027)
                         });
                 });
 
-            modelBuilder.Entity("Base.EntityFramework.Entities.Blog.Post", b =>
+            modelBuilder.Entity("DataProvider.EntityFramework.Entities.Blog.Post", b =>
                 {
-                    b.HasOne("Base.EntityFramework.Entities.Identity.User", "Author")
+                    b.HasOne("DataProvider.EntityFramework.Entities.Identity.User", "Author")
                         .WithMany("Posts")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Base.EntityFramework.Entities.Blog.PostCategory", "PostCategory")
+                    b.HasOne("DataProvider.EntityFramework.Entities.Blog.PostCategory", "PostCategory")
                         .WithMany("Posts")
                         .HasForeignKey("PostCategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -340,9 +400,9 @@ namespace DataProvider.Migrations
                     b.Navigation("PostCategory");
                 });
 
-            modelBuilder.Entity("Base.EntityFramework.Entities.Blog.PostComment", b =>
+            modelBuilder.Entity("DataProvider.EntityFramework.Entities.Blog.PostComment", b =>
                 {
-                    b.HasOne("Base.EntityFramework.Entities.Blog.Post", "Post")
+                    b.HasOne("DataProvider.EntityFramework.Entities.Blog.Post", "Post")
                         .WithMany("PostComments")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -351,15 +411,15 @@ namespace DataProvider.Migrations
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("Base.EntityFramework.Entities.Identity.UserRole", b =>
+            modelBuilder.Entity("DataProvider.EntityFramework.Entities.Identity.UserRole", b =>
                 {
-                    b.HasOne("Base.EntityFramework.Entities.Identity.Role", "Role")
+                    b.HasOne("DataProvider.EntityFramework.Entities.Identity.Role", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Base.EntityFramework.Entities.Identity.User", "User")
+                    b.HasOne("DataProvider.EntityFramework.Entities.Identity.User", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -370,22 +430,22 @@ namespace DataProvider.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Base.EntityFramework.Entities.Blog.Post", b =>
+            modelBuilder.Entity("DataProvider.EntityFramework.Entities.Blog.Post", b =>
                 {
                     b.Navigation("PostComments");
                 });
 
-            modelBuilder.Entity("Base.EntityFramework.Entities.Blog.PostCategory", b =>
+            modelBuilder.Entity("DataProvider.EntityFramework.Entities.Blog.PostCategory", b =>
                 {
                     b.Navigation("Posts");
                 });
 
-            modelBuilder.Entity("Base.EntityFramework.Entities.Identity.Role", b =>
+            modelBuilder.Entity("DataProvider.EntityFramework.Entities.Identity.Role", b =>
                 {
                     b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("Base.EntityFramework.Entities.Identity.User", b =>
+            modelBuilder.Entity("DataProvider.EntityFramework.Entities.Identity.User", b =>
                 {
                     b.Navigation("Posts");
 
