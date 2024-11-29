@@ -14,6 +14,8 @@ public interface IUnitOfWork : IDisposable
     IRoleRepo RoleRepo { get; }
     IUserRoleRepo UserRoleRepo { get; }
 
+    IEmailRepo EmailRepo { get; }
+
     Task<bool> CommitAsync();
 }
 
@@ -31,6 +33,10 @@ public class UnitOfWork : IUnitOfWork
     public IUserRepo UserRepo { get; }
     public IRoleRepo RoleRepo { get; }
     public IUserRoleRepo UserRoleRepo { get; }
+    #endregion
+
+    #region Email
+    public IEmailRepo EmailRepo { get; }
     #endregion
 
     public async Task<bool> CommitAsync() => await _context.SaveChangesAsync() > 0;
@@ -58,6 +64,10 @@ public class UnitOfWork : IUnitOfWork
         UserRepo = new UserRepo(_context, _logger);
         RoleRepo = new RoleRepo(_context, _logger);
         UserRoleRepo = new UserRoleRepo(_context, _logger);
+        #endregion
+
+        #region Email
+        EmailRepo = new EmailRepo();
         #endregion
     }
 }

@@ -4,12 +4,13 @@ using DataProvider.EntityFramework.Entities.Identity;
 using DataProvider.EntityFramework.Repository;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Security.Cryptography.X509Certificates;
 
 namespace DataProvider.EntityFramework.Services.Identity;
 
 public interface IUserRoleRepo : IRepository<UserRole>
 {
-    Task<UserRole> GetByUserId(int userId);
+    IEnumerable<UserRole> GetUserRolesByUserId(int userId);
     //Task<PaginatedList<UserRole>> GetByRoleId(int roleId);
 }
 public class UserRoleRepo : Repository<UserRole>, IUserRoleRepo
@@ -24,16 +25,16 @@ public class UserRoleRepo : Repository<UserRole>, IUserRoleRepo
         _logger = logger;
     }
 
-    public async Task<UserRole> GetByUserId(int userId)
+    public IEnumerable<UserRole> GetUserRolesByUserId(int userId)
     {
         try
         {
-            return await _queryable.SingleOrDefaultAsync(x => x.UserId == userId) ?? new UserRole();
+            return _queryable.Include(i => i.Role).Where(x => x.UserId == userId);
         }
         catch (Exception ex)
         {
             _logger.Error("Error in Get UserRole By UserId", ex);
-            return new UserRole();
+            return new List<UserRole>().AsEnumerable();
         }
     }
 }
