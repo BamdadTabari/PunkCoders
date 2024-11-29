@@ -1,3 +1,4 @@
+using DataProvider.Certain.Configs;
 using DataProvider.EntityFramework.Configs;
 using DataProvider.EntityFramework.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -48,7 +49,21 @@ builder.Services.AddSwaggerGen(c =>
 
 // Add repositories
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<JwtTokenService>();
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = "Cookies";
+//    options.DefaultChallengeScheme = "GitHub";
+//})
+//.AddCookie()
+//.AddGitHub(githubOptions =>
+//{
+//    var githubAuth = builder.Configuration.GetSection("Authentication:GitHub");
+//    githubOptions.ClientId = githubAuth["ClientId"];
+//    githubOptions.ClientSecret = githubAuth["ClientSecret"];
+//    githubOptions.CallbackPath = "/signin-github"; // Must match the callback URL in GitHub OAuth settings
+//    githubOptions.Scope.Add("read:user");
+//    githubOptions.Scope.Add("user:email");
+//});
 // Add database context
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -82,7 +97,8 @@ builder.Services.Configure<CacheOptions>(options =>
 });
 
 // image optimizer service config
-builder.Services.AddSingleton<ImageProcessingService>();
+builder.Services.AddSingleton<SecurityTokenConfig>();
+builder.Services.AddSingleton<JwtTokenService>();
 
 // Build the application
 var app = builder.Build();
@@ -102,7 +118,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors("Punk");
 
 // Configure the HTTP request pipeline. (redirect http to https)
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 //// Configure the HTTP request pipeline.
 //app.MapGet("/", () =>
@@ -118,11 +134,14 @@ app.MapTus("/files", ctx => Task.FromResult(new DefaultTusConfiguration
     UrlPath = "/files",
     MaxAllowedUploadSizeInBytes = 20 * 1024 * 1024 // 20 MB limit
 }));
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "optimized")),
-    RequestPath = "/optimized"
-});
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "optimized")),
+//    RequestPath = "/optimized"
+//});
+//app.UseHsts();
+// Configure middleware
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

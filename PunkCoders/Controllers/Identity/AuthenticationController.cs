@@ -9,13 +9,13 @@ using DataProvider.Models.Command.Identity;
 
 namespace PunkCoders.Controllers.Identity;
 [ApiController]
-[Route("api/auth")]
-public class AuthController : ControllerBase
+[Route("api/[controller]")]
+public class AuthenticationController : ControllerBase
 {
     private readonly JwtTokenService _tokenService;
     private readonly IUnitOfWork _unitOfWork;
 
-    public AuthController(JwtTokenService tokenService, IUnitOfWork unitOfWork)
+    public AuthenticationController(JwtTokenService tokenService, IUnitOfWork unitOfWork)
     {
         _tokenService = tokenService;
         _unitOfWork = unitOfWork;
@@ -43,11 +43,10 @@ public class AuthController : ControllerBase
             return Unauthorized("Invalid credentials");
         }
 
-        //var roles = await _userManager.GetRolesAsync(user.Id);
-        // var token = _tokenService.GenerateToken(user, roles);
+        var role =  _unitOfWork.UserRoleRepo.GetUserRolesByUserId(user.Id);
+        var token = _tokenService.GenerateToken(user, role.Select(x => x.Role.Title).ToList());
 
-        ///return Ok(new { Token = token });
-        return Ok();
+        return Ok(new { Token = token });
     }
 
     [HttpPost("register")]
