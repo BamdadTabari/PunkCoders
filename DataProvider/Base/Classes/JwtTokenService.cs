@@ -40,4 +40,30 @@ public class JwtTokenService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+
+    public string GetUserIdFromClaims(ClaimsPrincipal user)
+    {
+        // Attempt to find the 'userId' claim
+        var userIdClaim = user.Claims.FirstOrDefault(c => c.Type == "userId");
+        return userIdClaim?.Value; // Returns the userId as a string, or null if not found
+    }
+
+    public int GetTokenExpiryMinutes(string token)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
+
+        if (jwtToken == null)
+            throw new ArgumentException("Invalid token");
+
+        var expClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp);
+
+        if (expClaim == null)
+            throw new ArgumentException("Token does not contain an expiration claim");
+
+        var expDateTime = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expClaim.Value)).UtcDateTime;
+        var remainingMinutes = (int)(expDateTime - DateTime.UtcNow).TotalMinutes;
+
+        return remainingMinutes > 0 ? remainingMinutes : 0; // Ensure no negative values
+    }
 }

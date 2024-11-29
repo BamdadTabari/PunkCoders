@@ -1,15 +1,36 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
+
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
 namespace DataProvider.Migrations
 {
     /// <inheritdoc />
-    public partial class Init1 : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "BlacklistedToken",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    BlacklistedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BlacklistedToken", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "PostCategory",
                 columns: table => new
@@ -52,6 +73,7 @@ namespace DataProvider.Migrations
                     Mobile = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsMobileConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsEmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     LastPasswordChangeTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     FailedLoginCount = table.Column<int>(type: "int", nullable: false),
@@ -161,17 +183,23 @@ namespace DataProvider.Migrations
             migrationBuilder.InsertData(
                 table: "Role",
                 columns: new[] { "Id", "CreatedAt", "IsDeleted", "Title", "UpdatedAt" },
-                values: new object[] { 1, new DateTime(2024, 11, 19, 8, 55, 53, 110, DateTimeKind.Local).AddTicks(5091), false, "Owner", new DateTime(2024, 11, 19, 8, 55, 53, 110, DateTimeKind.Local).AddTicks(5104) });
+                values: new object[,]
+                {
+                    { 1, new DateTime(2024, 11, 29, 12, 15, 1, 961, DateTimeKind.Local).AddTicks(6489), false, "Owner", new DateTime(2024, 11, 29, 12, 15, 1, 961, DateTimeKind.Local).AddTicks(6502) },
+                    { 2, new DateTime(2024, 11, 29, 12, 15, 1, 961, DateTimeKind.Local).AddTicks(6520), false, "Admin", new DateTime(2024, 11, 29, 12, 15, 1, 961, DateTimeKind.Local).AddTicks(6523) },
+                    { 3, new DateTime(2024, 11, 29, 12, 15, 1, 961, DateTimeKind.Local).AddTicks(6525), false, "Writer", new DateTime(2024, 11, 29, 12, 15, 1, 961, DateTimeKind.Local).AddTicks(6527) },
+                    { 4, new DateTime(2024, 11, 29, 12, 15, 1, 961, DateTimeKind.Local).AddTicks(6529), false, "Reader", new DateTime(2024, 11, 29, 12, 15, 1, 961, DateTimeKind.Local).AddTicks(6530) }
+                });
 
             migrationBuilder.InsertData(
                 table: "User",
-                columns: new[] { "Id", "ConcurrencyStamp", "CreatedAt", "Email", "FailedLoginCount", "IsDeleted", "IsLockedOut", "IsMobileConfirmed", "LastLoginDate", "LastPasswordChangeTime", "LockoutEndTime", "Mobile", "PasswordHash", "SecurityStamp", "State", "UpdatedAt", "Username" },
-                values: new object[] { 1, "4FXXIH408SZ9EM0TVUAHF1OV5N2SXC96", new DateTime(2024, 11, 19, 8, 55, 53, 137, DateTimeKind.Local).AddTicks(9495), "bamdadtabari@outlook.com", 0, false, false, false, null, new DateTime(2024, 11, 19, 8, 55, 53, 137, DateTimeKind.Local).AddTicks(8883), null, "09301724389", "E38Bv6tSfRLCGabh0RsGpI/DtfI3NprJczneA6uXP2I=.uRAgkRUuBzNaGxfNm0YFwg==", "UIE5Y6RGJDF19RQ5YPA9QFN7O326JC40", "Active", new DateTime(2024, 11, 19, 8, 55, 53, 137, DateTimeKind.Local).AddTicks(9505), "Illegible_Owner" });
+                columns: new[] { "Id", "ConcurrencyStamp", "CreatedAt", "Email", "FailedLoginCount", "IsDeleted", "IsEmailConfirmed", "IsLockedOut", "IsMobileConfirmed", "LastLoginDate", "LastPasswordChangeTime", "LockoutEndTime", "Mobile", "PasswordHash", "SecurityStamp", "State", "UpdatedAt", "Username" },
+                values: new object[] { 1, "AVJLJO8MZPNS0EU06K2YPWC11FHCDMG7", new DateTime(2024, 11, 29, 12, 15, 1, 988, DateTimeKind.Local).AddTicks(7678), "bamdadtabari@outlook.com", 0, false, false, false, false, null, new DateTime(2024, 11, 29, 12, 15, 1, 988, DateTimeKind.Local).AddTicks(7195), null, "09301724389", "183+L5O8zIiQrakIbQT9KfZ/94Pqhw4EblDmrif/t0w=.YLcvHV8Sz0UWUz3scCM3lQ==", "7CY36WHO2Z83IYWAYG0SNJTTCUT5IXU7", "Active", new DateTime(2024, 11, 29, 12, 15, 1, 988, DateTimeKind.Local).AddTicks(7687), "Illegible_Owner" });
 
             migrationBuilder.InsertData(
                 table: "UserRole",
                 columns: new[] { "Id", "RoleId", "UserId", "CreatedAt", "IsDeleted", "UpdatedAt" },
-                values: new object[] { 0, 1, 1, new DateTime(2024, 11, 19, 8, 55, 53, 107, DateTimeKind.Local).AddTicks(2564), false, new DateTime(2024, 11, 19, 8, 55, 53, 109, DateTimeKind.Local).AddTicks(6727) });
+                values: new object[] { 0, 1, 1, new DateTime(2024, 11, 29, 12, 15, 1, 958, DateTimeKind.Local).AddTicks(6731), false, new DateTime(2024, 11, 29, 12, 15, 1, 960, DateTimeKind.Local).AddTicks(8027) });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Post_AuthorId",
@@ -203,6 +231,9 @@ namespace DataProvider.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "BlacklistedToken");
+
             migrationBuilder.DropTable(
                 name: "PostComment");
 

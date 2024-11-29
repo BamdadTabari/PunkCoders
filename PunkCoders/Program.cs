@@ -2,6 +2,8 @@ using DataProvider.Certain.Configs;
 using DataProvider.EntityFramework.Configs;
 using DataProvider.EntityFramework.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using PunkCoders.Configs;
 using Serilog;
@@ -67,6 +69,8 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(configuration.GetConnectionString("ServerDbConnection")).EnableDetailedErrors();
+    options.ConfigureWarnings(warnings =>
+    warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
 });
 
 // Add CORS policy
@@ -139,6 +143,7 @@ app.MapTus("/files", ctx => Task.FromResult(new DefaultTusConfiguration
 //    RequestPath = "/optimized"
 //});
 //app.UseHsts();
+app.UseMiddleware<TokenBlacklistMiddleware>();
 // Configure middleware
 app.UseAuthentication();
 app.UseAuthorization();
