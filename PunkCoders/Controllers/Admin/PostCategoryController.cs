@@ -161,7 +161,8 @@ public class PostCategoryController : ControllerBase
 
             entity.IsDeleted = true;
             _unitOfWork.PostCategoryRepo.Update(entity);
-            if (entity.Posts != null) {
+            if (entity.Posts != null)
+            {
 
                 foreach (var post in entity.Posts)
                 {

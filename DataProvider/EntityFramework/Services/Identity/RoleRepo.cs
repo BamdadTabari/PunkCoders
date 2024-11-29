@@ -3,14 +3,9 @@ using DataProvider.EntityFramework.Entities.Identity;
 using DataProvider.EntityFramework.Repository;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataProvider.EntityFramework.Services.Identity;
-public interface IRoleRepo: IRepository<Role>
+public interface IRoleRepo : IRepository<Role>
 {
     Task<Role> GetRole(string title);
     Task<Role> GetRole(int id);

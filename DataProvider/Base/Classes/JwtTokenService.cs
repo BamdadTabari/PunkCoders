@@ -1,11 +1,9 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
+﻿using DataProvider.Certain.Configs;
 using DataProvider.EntityFramework.Entities.Identity;
-using Microsoft.Extensions.Configuration;
-using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using DataProvider.Certain.Configs;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 public class JwtTokenService
 {
@@ -18,7 +16,7 @@ public class JwtTokenService
 
     public string GenerateToken(User user, IEnumerable<string> roles)
     {
-        
+
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.Key));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -37,7 +35,7 @@ public class JwtTokenService
             claims: claims,
             expires: DateTime.UtcNow.AddMinutes(_configuration.AccessTokenLifetime.TotalMinutes),
             signingCredentials: creds
-            
+
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);

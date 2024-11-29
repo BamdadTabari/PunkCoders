@@ -4,18 +4,18 @@ namespace DataProvider.Models.Command.Identity
 {
     public class UserForRegistrationCommand
     {
-        [Required(ErrorMessage = "لطفا نام کاربری را وارد کنید.")]
+        [Required]
         public string UserName { get; set; }
         [EmailAddress]
-        [Required(ErrorMessage = "لطفا ایمیلتان را وارد کنید.")]
+        [Required]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "لطفا شماره تماستان را وارد کنید.")]
+        [Required]
         public string PhoneNumber { get; set; }
-        [Required(ErrorMessage = "لطفا پسوردتان را وارد کنید.")]
+        [Required]
         public string Password { get; set; }
-        [Required(ErrorMessage = "لطفا پسوردتان را مجددا وارد کنید.")]
-        [Compare("Password", ErrorMessage = "پسورد های وارد شده با یکدیگر همخوانی ندارند.")]
+        [Required]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
     }
 }

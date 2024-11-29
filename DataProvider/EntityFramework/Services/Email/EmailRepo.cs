@@ -1,12 +1,11 @@
 ﻿using System.Net;
 using System.Net.Mail;
-using Microsoft.Extensions.Configuration;
 
 public interface IEmailRepo
 {
     Task SendEmailAsync(string toEmail, string subject, string body);
 }
-public class EmailRepo: IEmailRepo
+public class EmailRepo : IEmailRepo
 {
     private readonly string _smtpServer;
     private readonly int _port;

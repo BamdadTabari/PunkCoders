@@ -2,7 +2,6 @@ using DataProvider.Certain.Configs;
 using DataProvider.EntityFramework.Configs;
 using DataProvider.EntityFramework.Repository;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using PunkCoders.Configs;
 using Serilog;
