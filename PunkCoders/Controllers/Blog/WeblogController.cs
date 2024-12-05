@@ -1,5 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DataProvider.Assistant.Pagination;
+using DataProvider.EntityFramework.Entities.Blog;
+using DataProvider.EntityFramework.Repository;
+using DataProvider.Models.Query.Blog.PostCategory;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using PunkCoders.Configs;
 
 namespace PunkCoders.Controllers.Blog;
@@ -41,12 +47,12 @@ public class WeblogController : ControllerBase
 
             CacheManager.AddKey(cacheKey);
 
-            result.Views += 1;
+            result.ViewCount += 1;
             _unitOfWork.PostRepo.Update(result);
         }
-        result.Views += 1;
+        result.ViewCount += 1;
         _unitOfWork.PostRepo.Update(result);
-        _unitOfWork.Save();
+        await _unitOfWork.CommitAsync();
         return Ok(result);
     }
 
