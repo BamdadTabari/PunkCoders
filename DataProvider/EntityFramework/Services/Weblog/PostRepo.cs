@@ -35,7 +35,7 @@ public class PostRepo : Repository<Post>, IPostRepo
 
     public async Task<List<Post>> GetAllCategoryPostsAsync(int id)
     {
-        return await _queryable.Include(x => x.PostComments).Where(x => x.Id == id && x.IsDeleted == false).ToListAsync();
+        return await _queryable.Include(x => x.PostComments).Include(x => x.PostCategory).Where(x => x.Id == id && x.IsDeleted == false).ToListAsync();
     }
 
     public Task<bool> AnyAsync(string name)
@@ -57,7 +57,7 @@ public class PostRepo : Repository<Post>, IPostRepo
     {
         try
         {
-            return await _queryable.Include(i => i.PostComments).SingleOrDefaultAsync(x => x.Id == id && x.IsDeleted == false) ?? new Post();
+            return await _queryable.Include(i => i.PostComments).Include(x => x.PostCategory).SingleOrDefaultAsync(x => x.Id == id && x.IsDeleted == false) ?? new Post();
         }
         catch
         {
@@ -71,7 +71,7 @@ public class PostRepo : Repository<Post>, IPostRepo
 
         try
         {
-            var query = _queryable.Include(x => x.PostComments).AsNoTracking().ApplyFilter(filter).ApplySort(filter.SortBy);
+            var query = _queryable.Include(x => x.PostComments).Include(x => x.PostCategory).AsNoTracking().ApplyFilter(filter).ApplySort(filter.SortBy);
             var dataTotalCount = _queryable.Count();
             return new PaginatedList<Post>([.. query], dataTotalCount, filter.Page, filter.PageSize);
         }

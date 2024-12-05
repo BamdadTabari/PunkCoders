@@ -30,7 +30,7 @@ public class PostCommentRepo : Repository<PostComment>, IPostCommentRepo
     {
         try
         {
-            return await _queryable.ToListAsync();
+            return await _queryable.Include(x => x.Post).ToListAsync();
         }
         catch
         {
@@ -44,7 +44,7 @@ public class PostCommentRepo : Repository<PostComment>, IPostCommentRepo
     {
         try
         {
-            return await _queryable.SingleOrDefaultAsync(x => x.Id == id && x.IsDeleted == false) ?? new PostComment();
+            return await _queryable.Include(x => x.Post).SingleOrDefaultAsync(x => x.Id == id && x.IsDeleted == false) ?? new PostComment();
         }
         catch
         {
@@ -58,7 +58,7 @@ public class PostCommentRepo : Repository<PostComment>, IPostCommentRepo
 
         try
         {
-            var query = _queryable.AsNoTracking().ApplyFilter(filter).ApplySort(filter.SortBy);
+            var query = _queryable.Include(x => x.Post).AsNoTracking().ApplyFilter(filter).ApplySort(filter.SortBy);
             var dataTotalCount = _queryable.Count();
             return new PaginatedList<PostComment>([.. query], dataTotalCount, filter.Page, filter.PageSize);
         }
