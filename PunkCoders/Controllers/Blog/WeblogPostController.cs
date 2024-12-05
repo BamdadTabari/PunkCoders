@@ -11,7 +11,7 @@ using PunkCoders.Configs;
 namespace PunkCoders.Controllers.Blog;
 [Route("api/[controller]")]
 [ApiController]
-public class WeblogController : ControllerBase
+public class WeblogPostController : ControllerBase
 {
     private readonly IMemoryCache _memoryCache;
     private readonly CacheOptions _cacheOptions;
@@ -19,7 +19,7 @@ public class WeblogController : ControllerBase
     private readonly ILogger _logger;
     private const string CacheKey = "weblog";
 
-    public WeblogController(IMemoryCache memoryCache, IOptions<CacheOptions> cacheOptions, IUnitOfWork unitOfWork, ILogger logger)
+    public WeblogPostController(IMemoryCache memoryCache, IOptions<CacheOptions> cacheOptions, IUnitOfWork unitOfWork, ILogger logger)
     {
         _memoryCache = memoryCache;
         _cacheOptions = cacheOptions.Value;
@@ -28,7 +28,7 @@ public class WeblogController : ControllerBase
     }
 
     [HttpGet]
-    [Route("get-by-id")]
+    [Route("get-post-by-id")]
     public async Task<IActionResult> Get([FromQuery] GetPostQuery getPostQuery)
     {
         string cacheKey = $"{CacheKey}_{getPostQuery.PostId}";
@@ -57,7 +57,7 @@ public class WeblogController : ControllerBase
     }
 
     [HttpGet]
-    [Route("get-by-filter")]
+    [Route("get-posts-by-filter")]
     public IActionResult GetPaginated([FromQuery] GetPagedPostQuery getPagedPostQuery)
     {
         string cacheKey = $"{CacheKey}_Filter_Pagination";
