@@ -1,6 +1,7 @@
 ﻿using DataProvider.Assistant.Pagination;
 using DataProvider.EntityFramework.Entities.Blog;
 using DataProvider.EntityFramework.Repository;
+using DataProvider.Models.Command.Blog.Post;
 using DataProvider.Models.Query.Blog.PostCategory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -77,6 +78,32 @@ public class WeblogPostController : ControllerBase
 
         return Ok(result);
     }
+
+    [HttpPost]
+    [Route("like-post")]
+    public async Task<IActionResult> AddPost([FromForm] LikePostCommand request)
+    {
+        string cacheKey = $"{CacheKey}_{request.PostId}";
+        if (_memoryCache.TryGetValue(cacheKey,out Post? result))
+        {
+            if (request.IsLike)
+            {
+                result.LikeCount += 1;
+            }
+            else
+            {
+                if (result.LikeCount > 0)
+                    result.LikeCount -= 1;
+            }
+            _unitOfWork.PostRepo.Update(result);
+            await _unitOfWork.CommitAsync();
+            return Ok(result);
+        }
+        await _unitOfWork.PostRepo.AddAsync(post);
+        await _unitOfWork.CommitAsync();
+        return Ok(post);
+    }
+
 
     [HttpDelete]
     [Route("clear-all-cache")]
