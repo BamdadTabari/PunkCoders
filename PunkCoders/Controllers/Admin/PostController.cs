@@ -19,14 +19,16 @@ public class PostController : ControllerBase
     private readonly CacheOptions _cacheOptions;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger _logger;
+    private readonly JwtTokenService _tokenService;
     private const string CacheKey = "Post";
 
-    public PostController(IMemoryCache memoryCache, IOptions<CacheOptions> cacheOptions, IUnitOfWork unitOfWork, ILogger logger)
+    public PostController(IMemoryCache memoryCache, IOptions<CacheOptions> cacheOptions, IUnitOfWork unitOfWork, ILogger logger, JwtTokenService tokenService)
     {
         _memoryCache = memoryCache;
         _cacheOptions = cacheOptions.Value;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _tokenService = tokenService;
     }
     [HttpPost]
     [Route("create")]
@@ -71,7 +73,7 @@ public class PostController : ControllerBase
                 Title = createPostCommand.Title,
                 Content = createPostCommand.Content,
                 Image = imagePath,
-                AuthorId = 0, //TODO: FIX This,
+                AuthorId = int.Parse(_tokenService.GetUserIdFromClaims(User)),
                 IsPublished = createPostCommand.IsPublished,
                 PostCategoryId = createPostCommand.PostCategoryId,
                 ShortDescription = createPostCommand.ShortDescription,
