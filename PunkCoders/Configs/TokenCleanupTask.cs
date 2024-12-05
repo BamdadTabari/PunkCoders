@@ -1,28 +1,15 @@
-﻿using System;
-using System.Threading.Tasks;
-using DataProvider.EntityFramework.Repository;
-using Microsoft.Extensions.DependencyInjection;
+﻿using DataProvider.EntityFramework.Repository;
 
+namespace PunkCoders.Configs;
 public class TokenCleanupTask
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public TokenCleanupTask(IServiceProvider serviceProvider)
+    public async Task ExecuteAsync(IUnitOfWork unitOfWork)
     {
-        _serviceProvider = serviceProvider;
-    }
-
-    public async Task ExecuteAsync()
-    {
-        using (var scope = _serviceProvider.CreateScope())
+        var tokens = await unitOfWork.TokenBlacklistRepo.GetExpiredTokensAsync();
+        if (tokens != null)
         {
-            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-            var tokens = await unitOfWork.TokenBlacklistRepo.GetExpiredTokensAsync();
-            if (tokens != null)
-            {
-                unitOfWork.TokenBlacklistRepo.RemoveRange(tokens);
-                await unitOfWork.CommitAsync();
-            }
+            unitOfWork.TokenBlacklistRepo.RemoveRange(tokens);
+            await unitOfWork.CommitAsync();
         }
     }
 }

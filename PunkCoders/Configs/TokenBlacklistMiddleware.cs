@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using DataProvider.EntityFramework.Repository;
 
+namespace PunkCoders.Configs;
 public class TokenBlacklistMiddleware
 {
     private readonly RequestDelegate _next;
