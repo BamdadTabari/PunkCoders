@@ -3,7 +3,6 @@ using DataProvider.EntityFramework.Entities.Blog;
 using DataProvider.EntityFramework.Repository;
 using DataProvider.Models.Command.Blog.Post;
 using DataProvider.Models.Query.Blog.PostCategory;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
@@ -85,7 +84,7 @@ public class WeblogPostController : ControllerBase
     public async Task<IActionResult> LikePost([FromForm] LikePostCommand request)
     {
         string cacheKey = $"{CacheKey}_{request.PostId}";
-        if (_memoryCache.TryGetValue(cacheKey,out Post? result))
+        if (_memoryCache.TryGetValue(cacheKey, out Post? result))
         {
             if (request.IsLike)
             {

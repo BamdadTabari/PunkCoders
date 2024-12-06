@@ -17,7 +17,7 @@ public static class PostCommentExtension
         if (!string.IsNullOrEmpty(filter.CommentAuthorName))
             query = query.Where(x => x.AuthorName.ToLower().Contains(filter.CommentAuthorName.ToLower().Trim()));
         if (!string.IsNullOrEmpty(filter.PostAuthorName))
-                query = query.Where(x => x.Post.Author.Username.ToLower().Contains(filter.PostAuthorName.ToLower().Trim()));
+            query = query.Where(x => x.Post.Author.Username.ToLower().Contains(filter.PostAuthorName.ToLower().Trim()));
 
         if (filter.IsDeleted.HasValue)
             query = query.Where(x => x.IsDeleted == filter.IsDeleted.Value);

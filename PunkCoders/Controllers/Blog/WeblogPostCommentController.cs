@@ -1,10 +1,8 @@
 ﻿using DataProvider.EntityFramework.Entities.Blog;
 using DataProvider.EntityFramework.Repository;
-using DataProvider.Models.Command.Blog.Post;
 using DataProvider.Models.Command.Blog.PostComment;
 using DataProvider.Models.Query.Blog.PostComment;
 using DataProvider.Models.Result.Blog;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
@@ -71,7 +69,7 @@ public class WeblogPostCommentController : ControllerBase
 
             if (!_memoryCache.TryGetValue(cacheKey, out PostComment? result))
             {
-                result =  await _unitOfWork.PostCommentRepo.GetByIdAsync(getPostCommentQuery.PostCommentId);
+                result = await _unitOfWork.PostCommentRepo.GetByIdAsync(getPostCommentQuery.PostCommentId);
 
                 if (result == null) return NotFound("Post Comment not found.");
 

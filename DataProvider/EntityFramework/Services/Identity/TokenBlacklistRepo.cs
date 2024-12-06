@@ -3,11 +3,6 @@ using DataProvider.EntityFramework.Entities.Identity;
 using DataProvider.EntityFramework.Repository;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataProvider.EntityFramework.Services.Identity;
 public interface ITokenBlacklistRepository : IRepository<BlacklistedToken>
@@ -43,11 +38,11 @@ public class TokenBlacklistRepo : Repository<BlacklistedToken>, ITokenBlacklistR
 
     public async Task<List<BlacklistedToken>?> GetExpiredTokensAsync()
     {
-        
+
         try
         {
             return await _queryable.Where(t => t.ExpiryDate <= DateTime.UtcNow).ToListAsync();
-            
+
         }
         catch (Exception ex)
         {

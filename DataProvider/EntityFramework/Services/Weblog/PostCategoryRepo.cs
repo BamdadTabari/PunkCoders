@@ -48,7 +48,7 @@ public class PostCategoryRepo : Repository<PostCategory>, IPostCategoryRepo
     {
         try
         {
-            return await _queryable.Include(x=>x.Posts).ThenInclude(x=>x.PostComments).ToListAsync();
+            return await _queryable.Include(x => x.Posts).ThenInclude(x => x.PostComments).ToListAsync();
         }
         catch
         {
