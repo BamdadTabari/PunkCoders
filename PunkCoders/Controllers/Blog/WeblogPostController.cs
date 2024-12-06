@@ -81,7 +81,7 @@ public class WeblogPostController : ControllerBase
 
     [HttpPost]
     [Route("like-post")]
-    public async Task<IActionResult> AddPost([FromForm] LikePostCommand request)
+    public async Task<IActionResult> LikePost([FromForm] LikePostCommand request)
     {
         string cacheKey = $"{CacheKey}_{request.PostId}";
         if (_memoryCache.TryGetValue(cacheKey,out Post? result))
@@ -99,9 +99,19 @@ public class WeblogPostController : ControllerBase
             await _unitOfWork.CommitAsync();
             return Ok(result);
         }
-        await _unitOfWork.PostRepo.AddAsync(post);
+        result = await _unitOfWork.PostRepo.GetByIdAsync(request.PostId);
+        if (request.IsLike)
+        {
+            result.LikeCount += 1;
+        }
+        else
+        {
+            if (result.LikeCount > 0)
+                result.LikeCount -= 1;
+        }
+        _unitOfWork.PostRepo.Update(result);
         await _unitOfWork.CommitAsync();
-        return Ok(post);
+        return Ok(result);
     }
 
 
