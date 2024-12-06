@@ -73,7 +73,6 @@ public class PostCategoryRepo : Repository<PostCategory>, IPostCategoryRepo
 
     public PaginatedList<PostCategory> GetPaginated(GetPagedPostQuery filter)
     {
-
         try
         {
             var query = _queryable.Include(x => x.Posts).ThenInclude(x => x.PostComments).AsNoTracking().ApplyFilter(filter).ApplySort(filter.SortBy);
