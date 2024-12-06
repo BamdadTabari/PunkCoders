@@ -1,4 +1,4 @@
-﻿using DataProvider.Assistant.Pagination;
+﻿using DataProvider.Assistant.Enums;
 using DataProvider.EntityFramework.Entities.Blog;
 using DataProvider.Models.Query.Blog.PostComment;
 

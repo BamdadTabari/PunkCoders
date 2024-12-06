@@ -1,4 +1,4 @@
-﻿namespace DataProvider.Assistant.Pagination
+﻿namespace DataProvider.Assistant.Enums
 {
     public enum SortByEnum
     {

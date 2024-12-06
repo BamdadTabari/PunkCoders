@@ -1,4 +1,6 @@
-﻿namespace DataProvider.Assistant.Pagination
+﻿using DataProvider.Assistant.Enums;
+
+namespace DataProvider.Assistant.Pagination
 {
     public class DefaultPaginationFilter : PaginationFilter
     {
