@@ -1,6 +1,9 @@
-﻿using DataProvider.EntityFramework.Configs;
+﻿using DataProvider.Assistant.Pagination;
+using DataProvider.EntityFramework.Configs;
 using DataProvider.EntityFramework.Entities.Identity;
+using DataProvider.EntityFramework.Extensions.Identity;
 using DataProvider.EntityFramework.Repository;
+using DataProvider.Models.Query.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -10,6 +13,7 @@ public interface IUserRoleRepo : IRepository<UserRole>
 {
     IEnumerable<UserRole> GetUserRolesByUserId(int userId);
     //Task<PaginatedList<UserRole>> GetByRoleId(int roleId);
+    PaginatedList<UserRole> GetPaginatedUserRoles(GetPagedUserRoleQuery filter);
 }
 public class UserRoleRepo : Repository<UserRole>, IUserRoleRepo
 {
@@ -21,6 +25,21 @@ public class UserRoleRepo : Repository<UserRole>, IUserRoleRepo
     {
         _queryable = DbContext.Set<UserRole>();
         _logger = logger;
+    }
+
+    public PaginatedList<UserRole> GetPaginatedUserRoles(GetPagedUserRoleQuery filter)
+    {
+        try
+        {
+            var query = _queryable.Include(i => i.Role).Include(x=>x.User).AsNoTracking().ApplyFilter(filter).ApplySort(filter.SortBy);
+            var dataTotalCount = _queryable.Count();
+            return new PaginatedList<UserRole>([.. query], dataTotalCount, filter.Page, filter.PageSize);
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
     }
 
     public IEnumerable<UserRole> GetUserRolesByUserId(int userId)

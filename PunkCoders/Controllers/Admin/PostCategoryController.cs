@@ -119,7 +119,7 @@ public class PostCategoryController : ControllerBase
     // Get paginated post categories
     [HttpGet]
     [Route("get-by-filter")]
-    public IActionResult GetPaginated([FromQuery] GetPagedPostQuery getPagedPostCategoryQuery)
+    public IActionResult GetPaginated([FromQuery] GetPagedPostCategoryQuery getPagedPostCategoryQuery)
     {
         string cacheKey = $"{CacheKey}_Filter_Pagination";
 

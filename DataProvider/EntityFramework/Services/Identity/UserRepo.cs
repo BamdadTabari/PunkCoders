@@ -100,13 +100,13 @@ public class UserRepo : Repository<User>, IUserRepo
     {
         try
         {
-            var query = _queryable.AsNoTracking().ApplyFilter(filter).ApplySort(filter.SortBy);
+            var query = _queryable.Include(i => i.UserRoles).ThenInclude(x=>x.Role).AsNoTracking().ApplyFilter(filter).ApplySort(filter.SortBy);
             var dataTotalCount = _queryable.Count();
             return new PaginatedList<User>([.. query], dataTotalCount, filter.Page, filter.PageSize);
         }
-        catch
+        catch (Exception ex)
         {
-            _logger.Error("Error in Get Paginated Users");
+            _logger.Error("Error in Get Paginated Users", ex);
             return new PaginatedList<User>([], 0, filter.Page, filter.PageSize);
         }
     }

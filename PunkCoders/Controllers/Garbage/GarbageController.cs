@@ -90,12 +90,19 @@ public class GarbageController : ControllerBase
                 });
                 return Ok(result4);
             case GarbageItemsEnum.Role:
-                var result5 = _unitOfWork.RoleRepo.GetPaginated(new GetPagedRoleQuery()
+                var result5 = _unitOfWork.RoleRepo.GetPaginatedRoles(new GetPagedRoleQuery()
                 {
                     IsDeleted = true, SortByEnum = request.SortByEnum, TotalPageCount = request.TotalPageCount,
                     Keyword = request.Keyword, PageSize = request.PageSize, Page = request.Page
                 });
                 return Ok(result5);
+            case GarbageItemsEnum.UserRole:
+                var result6 = _unitOfWork.UserRoleRepo.GetPaginatedUserRoles(new GetPagedUserRoleQuery()
+                {
+                    IsDeleted = true, SortByEnum = request.SortByEnum, TotalPageCount = request.TotalPageCount,
+                    Keyword = request.Keyword, PageSize = request.PageSize, Page = request.Page
+                });
+                return Ok(result6);
         }
         return BadRequest();
     }
