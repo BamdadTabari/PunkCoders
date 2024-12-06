@@ -12,7 +12,7 @@ public interface IPostCategoryRepo : IRepository<PostCategory>
 {
     Task<bool> AnyAsync(string name);
     Task<PostCategory> GetByIdAsync(int id);
-    PaginatedList<PostCategory> GetPaginated(GetPagedPostQuery filter);
+    PaginatedList<PostCategory> GetPaginated(GetPagedPostCategoryQuery filter);
     Task<List<PostCategory>> GetAll();
 }
 
@@ -71,7 +71,7 @@ public class PostCategoryRepo : Repository<PostCategory>, IPostCategoryRepo
         }
     }
 
-    public PaginatedList<PostCategory> GetPaginated(GetPagedPostQuery filter)
+    public PaginatedList<PostCategory> GetPaginated(GetPagedPostCategoryQuery filter)
     {
         try
         {
