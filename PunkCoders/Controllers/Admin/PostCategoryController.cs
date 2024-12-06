@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 using PunkCoders.Configs;
 namespace PunkCoders.Controllers.Admin;
 // API Controller
-[Route("apc")]
+[Route("post-category")]
 [ApiController]
 public class PostCategoryController : ControllerBase
 {

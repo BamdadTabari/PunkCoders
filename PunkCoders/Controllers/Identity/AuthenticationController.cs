@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PunkCoders.Controllers.Identity;
 [ApiController]
-[Route("api/[controller]")]
+[Route("authentication")]
 public class AuthenticationController : ControllerBase
 {
     private readonly JwtTokenService _tokenService;

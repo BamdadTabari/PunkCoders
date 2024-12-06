@@ -11,7 +11,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
 namespace PunkCoders.Controllers.Admin;
-[Route("ap")]
+[Route("post")]
 [ApiController]
 public class PostController : ControllerBase
 {

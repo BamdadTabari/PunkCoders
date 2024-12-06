@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 using PunkCoders.Configs;
 
 namespace PunkCoders.Controllers.Blog;
-[Route("wpc")]
+[Route("weblog-post")]
 [ApiController]
 public class WeblogPostController : ControllerBase
 {

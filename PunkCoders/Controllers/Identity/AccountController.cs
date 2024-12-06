@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PunkCoders.Controllers.Identity;
 [ApiController]
-[Route("api/[controller]")]
+[Route("account")]
 public class AccountController : Controller
 {
     private readonly JwtTokenService _tokenService;
