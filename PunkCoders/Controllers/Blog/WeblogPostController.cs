@@ -51,6 +51,7 @@ public class WeblogPostController : ControllerBase
             result.ViewCount += 1;
             _unitOfWork.PostRepo.Update(result);
         }
+        //result = await _unitOfWork.PostRepo.GetByIdAsync(getPostQuery.PostId);
         result.ViewCount += 1;
         _unitOfWork.PostRepo.Update(result);
         await _unitOfWork.CommitAsync();

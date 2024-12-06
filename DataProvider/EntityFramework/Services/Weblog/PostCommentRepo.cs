@@ -6,6 +6,7 @@ using DataProvider.EntityFramework.Repository;
 using DataProvider.Models.Query.Blog.PostComment;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Reflection.Metadata;
 
 namespace DataProvider.EntityFramework.Services.Weblog;
 public interface IPostCommentRepo : IRepository<PostComment>
@@ -13,6 +14,7 @@ public interface IPostCommentRepo : IRepository<PostComment>
     Task<PostComment> GetByIdAsync(int id);
     PaginatedList<PostComment> GetPaginated(GetPagedCommentsQuery filter);
     Task<List<PostComment>> GetAll();
+    Task<List<PostComment>> GetByCount(int count);
 }
 
 public class PostCommentRepo : Repository<PostComment>, IPostCommentRepo
@@ -32,6 +34,20 @@ public class PostCommentRepo : Repository<PostComment>, IPostCommentRepo
         try
         {
             return await _queryable.Include(x => x.Post).ToListAsync();
+        }
+        catch
+        {
+
+            _logger.Error("Error in GetAll");
+            return [];
+        }
+    }
+
+    public async Task<List<PostComment>> GetByCount(int count)
+    {
+        try
+        {
+            return await _queryable.OrderBy(x => x.CreatedAt).Take(count).ToListAsync();
         }
         catch
         {

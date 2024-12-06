@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DataProvider.Models.Command.Blog.PostComment;
-public class CreateCommentPostCommand
+public class EditPostCommentCommand
 {
-    public int PostId { get; set; }
+    public int PostCommentId { get; set; }
     public string CommentText { get; set; }
 }
